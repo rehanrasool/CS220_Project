@@ -1,6 +1,8 @@
 <?php
 
 /**
+Author : Omar Waheed
+
 This is authentication script that has two methods
 (1) Sign_in
 (2) sign_up
