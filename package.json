@@ -7,7 +7,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "~4.9.x"
+    "socket.io": "latest",
+        "express": "latest",
+        "jade": "latest"
   },
   "engines": {
     "node": "0.10.x"
@@ -23,3 +25,4 @@
   ],
   "license": "MIT"
 }
+
