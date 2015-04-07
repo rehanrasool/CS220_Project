@@ -44,10 +44,21 @@ module.exports = function(app, io){
            { console.error(err); response.send("Error " + err); }
           else
            { 
-            response.render('home');
+                    // Generate unique id for the room
+            var id = result.rows['id'];
+
+            // Redirect to the random room
+            response.redirect('/home/'+id);
+            //response.render('home');
            }
         });
       });
+  });
+
+  app.get('/home/:id', function(req,res){
+
+    // Render the chant.html view
+    res.render('home');
   });
 
 };
