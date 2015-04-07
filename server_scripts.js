@@ -5,10 +5,17 @@ var bodyParser = require('body-parser');
 
 module.exports = function(app, io){
 
+  app.use(express.static(__dirname + '/public'));
     // parse application/json
   app.use(bodyParser.json());                        
   // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: true }));
+
+  app.get('/', function(req, res){
+
+    // Render views/index.html
+    res.render('index');
+  });
 
   app.get('/db', function (request, response) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {

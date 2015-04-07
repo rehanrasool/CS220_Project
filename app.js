@@ -22,7 +22,6 @@ var pg = require('pg');
 // the app and io as arguments to the returned functions.
 
 require('./config')(app, io);
-require('./routes')(app, io);
 require('./server_scripts')(app, io);
 
 
