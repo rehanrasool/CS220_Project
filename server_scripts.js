@@ -2,6 +2,7 @@ var pg = require('pg');
 var express = require('express');
 var bodyParser = require('body-parser');
 
+
 module.exports = function(app, io){
 
     // parse application/json
@@ -26,7 +27,9 @@ module.exports = function(app, io){
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       console.log("post received: %s %s", username, password);
-response.render('home');
+
+      response.render('home');
+
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         authenticate_query = 'SELECT id FROM user_table WHERE username = \'' + username + '\' AND password = \'' + password + '\';';
         console.log(authenticate_query);
@@ -36,7 +39,7 @@ response.render('home');
            { console.error(err); response.send("Error " + err); }
           else
            { 
-            res.render('home');
+            response.render('home');
             response.send(result.rows); 
 
           }
