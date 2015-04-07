@@ -28,7 +28,9 @@ module.exports = function(app, io){
       console.log("post received: %s %s", username, password);
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query('SELECT id FROM user_table WHERE username = "' + username + '" AND password = "' + password + '";' , function(err, result) {
+        authenticate_query = 'SELECT id FROM user_table WHERE username = \'' + username + '\' AND password = \'' + password + '\';';
+        console.log(authenticate_query);
+        client.query(authenticate_query , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
