@@ -7,6 +7,8 @@
 var express = require('express'),
 	app = express();
 
+var bodyParser = require('body-parser');
+
 // This is needed if the app is run on heroku:
 
 var port = process.env.PORT || 8080;
@@ -25,6 +27,12 @@ require('./config')(app, io);
 require('./routes')(app, io);
 
 
+// parse application/json
+app.use(bodyParser.json());                        
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.get('/db', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -37,5 +45,23 @@ app.get('/db', function (request, response) {
     });
   });
 })
+
+
+app.post('/signup', function(request, response) {
+    var username = request.body.inputUsername;
+    var password = request.body.inputPassword;
+    console.log("post received: %s %s", username, password);
+
+	  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+	    client.query('SELECT * FROM user_table', function(err, result) {
+	      done();
+	      if (err)
+	       { console.error(err); response.send("Error " + err); }
+	      else
+	       { response.send(result.rows); }
+	    });
+	  });
+});
+
 
 console.log('Your application is running on http://localhost:' + port);
