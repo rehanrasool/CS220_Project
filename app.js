@@ -16,10 +16,26 @@ var port = process.env.PORT || 8080;
 
 var io = require('socket.io').listen(app.listen(port));
 
+var pg = require('pg');
+
 // Require the configuration and the routes files, and pass
 // the app and io as arguments to the returned functions.
 
 require('./config')(app, io);
 require('./routes')(app, io);
+
+
+
+app.get('/db', function (request, response) {
+  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    client.query('SELECT * FROM test_table', function(err, result) {
+      done();
+      if (err)
+       { console.error(err); response.send("Error " + err); }
+      else
+       { response.send(result.rows); }
+    });
+  });
+})
 
 console.log('Your application is running on http://localhost:' + port);
