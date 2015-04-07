@@ -1,28 +1,22 @@
 {
-  "name": "node-js-getting-started",
-  "version": "0.1.2",
-  "description": "A sample Node.js app using Express 4",
-  "main": "index.js",
+  "name": "NodeChatSystem",
+  "version": "0.0.1",
+  "description": "Realtime chat system for Tutorialzine.com",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "socket.io": "latest",
-        "express": "latest",
-        "jade": "latest"
-  },
-  "engines": {
-    "node": "0.10.x"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "node",
-    "heroku",
-    "express"
+    "chat",
+    "system"
   ],
-  "license": "MIT"
+  "author": "Nikolay Anastasov",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^1.0.0",
+    "express": "^4.8.2",
+    "gravatar": "~1.0.6",
+    "socket.io": "^1.0.6"
+  }
 }
-
