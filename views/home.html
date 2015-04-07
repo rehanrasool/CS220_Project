@@ -1,3 +1,22 @@
+<?php
+
+    function pg_connection_string() {
+      return "dbname=d9ptr32iq13h5r host=ec2-54-163-235-165.compute-1.amazonaws.com p
+user=xzvsvyawkprkod password=-hqT7covnCq5xAb56iToUQIIIW sslmode=require";
+    }
+     
+    # Establish db connection
+    $db = pg_connect(pg_connection_string());
+    if (!$db) {
+        echo "Database connection error."
+        exit;
+    }
+     
+    $result = pg_query($db, "SELECT * FROM user_table;");
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +31,7 @@
     <title>chimpad</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,7 +57,7 @@
                 </button>
                 <ul class="nav navbar-nav">
                     <li>
-                        <img src="logo.png" width="200px" />
+                        <img src="../img/logo.png" width="200px" />
                     </li>
                 </ul>
                 
@@ -138,10 +157,10 @@
     </section>
 
     <!-- jQuery Version 1.11.1 -->
-    <script src="/js/jquery.js"></script>
+    <script src="../js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
 
 </body>
 

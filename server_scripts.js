@@ -2,7 +2,6 @@ var pg = require('pg');
 var express = require('express');
 var bodyParser = require('body-parser');
 
-
 module.exports = function(app, io){
 
   app.use(express.static(__dirname + '/public'));
@@ -34,10 +33,9 @@ module.exports = function(app, io){
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       console.log("post received: %s %s", username, password);
-
       response.render('home');
-
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      
+      /*pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         authenticate_query = 'SELECT id FROM user_table WHERE username = \'' + username + '\' AND password = \'' + password + '\';';
         console.log(authenticate_query);
         client.query(authenticate_query , function(err, result) {
@@ -46,12 +44,12 @@ module.exports = function(app, io){
            { console.error(err); response.send("Error " + err); }
           else
            { 
-            response.render('home');
+            res.render('home');
             response.send(result.rows); 
 
           }
         });
-      });
+      });*/
   });
 
 };
