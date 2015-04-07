@@ -49,7 +49,7 @@ module.exports = function(app, io){
             console.log(result.rows[0]);
             console.log(result.rows[0]["id"]);
             
-            var id = result.rows;
+            var id = result.rows[0]["id"];
             
             //response.send(result.rows);
             response.send(id);
