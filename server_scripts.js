@@ -45,7 +45,7 @@ module.exports = function(app, io){
           else
            { 
                     // Generate unique id for the room
-            var id = result.rows[0]['id'];
+            var id = result.rows[0];
             //response.send(result.rows);
             response.send(id);
             // Redirect to the random room
