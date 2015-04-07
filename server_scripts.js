@@ -52,9 +52,9 @@ module.exports = function(app, io){
             var id = result.rows[0]["id"];
             
             //response.send(result.rows);
-            response.send(id);
+            //response.send(id);
             // Redirect to the random room
-            //response.redirect('/home/'+id);
+            response.redirect('/home/'+id);
             //response.render('home');
            }
         });
