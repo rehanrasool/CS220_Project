@@ -89,7 +89,7 @@ function sign_up($username, $pass, $email){
 
 	$result = mysqli_query($chimpad_conn , $query); // execute query
 
-	//now check if there was an exiting user by checking num of rows returned by query
+	//now check if there was an exiting user by checking num of rows returned by query.
 
 	if($result->num_rows == 0){ // no user exists with same username
 		$insert_query = "INSERT INTO user(user_name,password,user_email) VALUES(".
