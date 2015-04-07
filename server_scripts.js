@@ -35,7 +35,11 @@ module.exports = function(app, io){
           if (err)
            { console.error(err); response.send("Error " + err); }
           else
-           { response.send(result.rows); }
+           { 
+            res.render('home');
+            response.send(result.rows); 
+
+          }
         });
       });
   });
