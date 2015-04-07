@@ -3,10 +3,22 @@
 $(function(){
 
 	// getting the id of the room from the url
-	var id = Number(window.location.pathname.match(/\/home\/(\d+)$/)[1]);
+	var chimpad_user_id = Number(window.location.pathname.match(/\/home\/(\d+)$/)[1]);
 
-	// connect to the socket
-	var socket = io();
+	$.ajax
+  	({
+      type: "POST",
+      //the url where you want to sent the userName and password to
+      url: "../server/find_dehari.php",
+      //json object to sent to the authentication url
+      data : {
+      get_user_pads: 1,
+      user_id : chimpad_user_id
+    } }).done(function(raw_data) {
+      
+      var data = JSON.parse(raw_data);
+
+  	});
 
 	// cache some jQuery objects
 	// var section = $(".section"),
