@@ -53,7 +53,6 @@ function leave_pad($user_id, $pad_id){
 			$result_admin_query  = 'Invalid query: ' . mysql_error() . "\n";
 			$result_admin_query .= 'Whole query: ' . $query;
 			return $result_admin_query; // return error message
-
 		}
 
 	if($result_admin_query->num_rows == 0){
