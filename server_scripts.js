@@ -44,10 +44,12 @@ module.exports = function(app, io){
            { console.error(err); response.send("Error " + err); }
           else
            { 
-                    // Generate unique id for the room
-            for (var key in result.rows[0]) {
-                var id = result.rows[0][key];
-            }
+
+            console.log(result.rows);
+            console.log(result.rows[0]);
+            console.log(result.rows[0]["id"]);
+            
+            var id = result.rows;
             
             //response.send(result.rows);
             response.send(id);
