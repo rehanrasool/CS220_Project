@@ -40,7 +40,7 @@ function sign_in($username, $pass){
 	$pass_safe = mysqli_real_escape_string($chimpad_conn,$pass); // SQL injection prevention
 
 	$query = "SELECT * FROM user 
-							WHERE user_name = " . $uname_safe .
+							WHERE username = " . $uname_safe .
 							 " AND " . "password = " . "pass_safe";
 
 
@@ -55,7 +55,7 @@ function sign_in($username, $pass){
 		$user_id = -1;
 	    while ($row = $result->fetch_assoc()) {
 		        $user_id = $row['user_id'];
-		        $user_name = $row['user_name'];
+		        $user_name = $row['username'];
 		}
 
 		$_SESSION['user_id'] = $user_id;
@@ -99,14 +99,14 @@ function sign_up($username, $pass, $email){
 
 		$insert_result = msqli_query($chimpad_conn,$insert_query);
 
-		$user_id_query = "SELECT user_id FROM user WHERE username = " . "'" . $uname_safe . "'";
+		$user_id_query = "SELECT id FROM user WHERE username = " . "'" . $uname_safe . "'";
 
 		$id_result = msqli_query($chimpad_conn,$user_id_query);
 
 		$user_data_array = $id_result->fetch_assoc();
 
-		$_SESSION['user_id'] = $user_data_array['user_id'];
-		$_SESSION['user_name'] = $uname_safe;
+		$_SESSION['id'] = $user_data_array['id'];
+		$_SESSION['username'] = $uname_safe;
 
 		$return_message = "Username Created Successfully";
 		return json_encode($return_message);
