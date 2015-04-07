@@ -45,8 +45,8 @@ module.exports = function(app, io){
           else
            { 
                     // Generate unique id for the room
-            for (var row in result.rows) {
-                var id = row;
+            for (var key in result.rows[0]) {
+                var id = result.rows[0][key];
             }
             
             //response.send(result.rows);
