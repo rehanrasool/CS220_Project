@@ -9,7 +9,7 @@ $(function(){
   	({
       type: "POST",
       //the url where you want to sent the userName and password to
-      url: "../server/find_dehari.php",
+      url: "../server/scripts.php",
       //json object to sent to the authentication url
       data : {
       get_user_pads: 1,
