@@ -23,6 +23,7 @@ $(function(){
     var socket = io();
  
     socket.on('message', function (data) {
+      console.log(data);
         var messages = [];
         if(data.message) {
             messages.push(data);
