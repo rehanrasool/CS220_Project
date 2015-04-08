@@ -97,7 +97,7 @@ module.exports = function(app, io){
   });
 
   app.get('/create', function(request, response) {
-    res.render('create');
+    response.render('create');
   });
 
   app.get('/home/:id', function(req,res){
