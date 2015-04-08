@@ -22,7 +22,7 @@ $(function(){
 
 
     var messages = [];
-    var socket = io.connect(process.env.PORT || 8080);
+    var socket = io.connect('http://localhost:8080');
     var padContent = document.getElementById("pad_content");
     var sendButton = document.getElementById("save_pad_content");
     var content = document.getElementById("content");
