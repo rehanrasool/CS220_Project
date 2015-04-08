@@ -33,8 +33,7 @@ module.exports = function(app, io){
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       console.log("post received: %s %s", username, password);
-      //response.render('home');
-      
+
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         authenticate_query = 'SELECT id FROM user_table WHERE username = \'' + username + '\' AND password = \'' + password + '\';';
         console.log(authenticate_query);
@@ -44,18 +43,8 @@ module.exports = function(app, io){
            { console.error(err); response.send("Error " + err); }
           else
            { 
-
-            console.log(result.rows);
-            console.log(result.rows[0]);
-            console.log(result.rows[0]["id"]);
-            
             var id = result.rows[0]["id"];
-            
-            //response.send(result.rows);
-            //response.send(id);
-            // Redirect to the random room
             response.redirect('/home/'+id);
-            //response.render('home');
            }
         });
       });
@@ -96,14 +85,40 @@ module.exports = function(app, io){
       });
   });
 
+  app.post('/get_all_pads', function(request, response) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_all_pads_data = 'SELECT * FROM pad;';
+
+        client.query(get_all_pads_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
   app.get('/create', function(request, response) {
     response.render('create');
   });
 
-  app.get('/home/:id', function(req,res){
+  app.get('/find', function(request, response) {
+    response.render('find');
+  });
 
-    // Render the chant.html view
-    res.render('home');
+  app.get('/about', function(request, response) {
+    response.render('about');
+  });
+
+  app.get('/index', function(request, response) {
+    response.render('index');
+  });
+
+  app.get('/home/:id', function(request,response){
+    response.render('home');
   });
 
 };
