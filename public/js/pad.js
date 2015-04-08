@@ -21,5 +21,37 @@ $(function(){
   	});
 
 
+    var messages = [];
+    var socket = io.connect(process.env.PORT || 8080);
+    var padContent = document.getElementById("pad_content");
+    var sendButton = document.getElementById("save_pad_content");
+    var content = document.getElementById("content");
+    var name = global.user_id;
+ 
+    socket.on('message', function (data) {
+        if(data.message) {
+            messages.push(data);
+            var html = '';
+            for(var i=0; i<messages.length; i++) {
+                html += '<b>' + (messages[i].username ? messages[i].username : 'Server') + ': </b>';
+                html += messages[i].message + '<br />';
+            }
+            padContent.innerHTML = html;
+
+        } else {
+            console.log("There is a problem:", data);
+        }
+    });
+ 
+    sendButton.onclick = sendMessage = function() {
+        if(name.value == "") {
+            alert("Please type your name!");
+        } else {
+            var text = padContent.value;
+            socket.emit('save_pad_content', { message: text, username: name });
+        }
+    };
+
+
 
 });
