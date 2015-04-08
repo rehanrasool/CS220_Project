@@ -20,7 +20,7 @@ $(function(){
 
   	});
 
-    var socket = io.connect('https://localhost:8080');
+    var socket = io();
  
     socket.on('message', function (data) {
         var messages = [];
