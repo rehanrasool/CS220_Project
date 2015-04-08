@@ -14,7 +14,9 @@ $(function(){
     } }).done(function(raw_data) {
       
       	var data = raw_data;
-
+        $('#pad_title').html(data['title']);
+        $('#pad_content').val(data['content']);
+        $('#pad_content_help_text').html('last modified: ' + data['last_modified_timestamp']);
 
   	});
 
