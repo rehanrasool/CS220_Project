@@ -121,5 +121,9 @@ module.exports = function(app, io){
     response.render('home');
   });
 
+  app.get('/home', function(request,response){
+    response.render('home');
+  });
+
 };
 
