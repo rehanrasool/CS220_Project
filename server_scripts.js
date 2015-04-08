@@ -102,6 +102,24 @@ module.exports = function(app, io){
       });
   });
 
+  app.post('/get_pad', function(request, response) {
+      var chimpad_pad_id = request.body.pad_id;
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        authenticate_query = 'SELECT * FROM pad WHERE id = ' + chimpad_pad_id + ';';
+
+        client.query(authenticate_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
   app.get('/create', function(request, response) {
     response.render('create');
   });
@@ -124,6 +142,10 @@ module.exports = function(app, io){
 
   app.get('/home', function(request,response){
     response.redirect('/home/'+global.user_id);
+  });
+
+  app.get('/pad/:id', function(request,response){
+    response.render('pad');
   });
 
 };
