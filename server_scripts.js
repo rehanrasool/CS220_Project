@@ -96,6 +96,10 @@ module.exports = function(app, io){
       });
   });
 
+  app.post('/create', function(request, response) {
+    res.render('create');
+  });
+
   app.get('/home/:id', function(req,res){
 
     // Render the chant.html view
