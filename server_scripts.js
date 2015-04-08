@@ -44,6 +44,7 @@ module.exports = function(app, io){
           else
            { 
             var id = result.rows[0]["id"];
+            global.user_id = id;
             response.redirect('/home/'+id);
            }
         });
@@ -122,7 +123,7 @@ module.exports = function(app, io){
   });
 
   app.get('/home', function(request,response){
-    response.render('home');
+    response.render('/home/'+global.user_id);
   });
 
 };
