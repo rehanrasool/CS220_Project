@@ -38,7 +38,7 @@ $(function(){
         }
     });
  
-    $('#save_pad_content').click(function() {
+    $('#pad_form').submit(function() {
         var text = $('#pad_content').val();
         socket.emit('save_pad_content', { message: text, username: name });
     });
