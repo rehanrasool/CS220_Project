@@ -61,21 +61,36 @@ module.exports = function(app, io){
       });
   });
 
-  app.post('/checking', function(request, response) {
-      var userid = request.body.user_id;
-      console.log("post received user id : %s", userid);
-      //response.render('home');
-      
+  app.post('/get_user_pads', function(request, response) {
+      var chimpad_user_id = request.body.user_id;
+
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        authenticate_query = 'SELECT * FROM user_table WHERE id = \'' + userid + '\';';
-        console.log(authenticate_query);
-        client.query(authenticate_query , function(err, result) {
+        get_user_pads_id_list = 'SELECT pad_id FROM user_pad WHERE user_id = \'' + chimpad_user_id + '\';';
+
+        client.query(get_user_pads_id_list , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
           else
            { 
-            response.send(result.rows);
+            var user_pad_ids = "0";
+            for (row in result.rows) {
+              user_pad_ids = user_pad_ids + "," + result.rows[row]['pad_id'];
+            }
+
+            get_user_pads_data = 'SELECT * FROM pad WHERE id IN (' + user_pad_ids + ');';
+
+              client.query(get_user_pads_data , function(err, result) {
+                done();
+                if (err)
+                 { console.error(err); response.send("Error " + err); }
+                else
+                 { 
+                    response.send(result.rows); 
+                 }
+              });
+
+            //response.send();
            }
         });
       });
