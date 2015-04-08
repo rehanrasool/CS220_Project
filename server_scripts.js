@@ -123,7 +123,7 @@ module.exports = function(app, io){
   });
 
   app.get('/home', function(request,response){
-    response.render('/home/'+global.user_id);
+    response.redirect('/home/'+global.user_id);
   });
 
 };
