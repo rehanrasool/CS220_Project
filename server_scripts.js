@@ -61,6 +61,26 @@ module.exports = function(app, io){
       });
   });
 
+  app.post('/checking', function(request, response) {
+      var userid = request.body.user_id;
+      console.log("post received user id : %s", userid);
+      //response.render('home');
+      
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        authenticate_query = 'SELECT * FROM user_table WHERE id = \'' + userid + '\';';
+        console.log(authenticate_query);
+        client.query(authenticate_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
   app.get('/home/:id', function(req,res){
 
     // Render the chant.html view
