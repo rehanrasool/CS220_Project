@@ -148,7 +148,7 @@ module.exports = function(app, io){
     response.render('pad');
   });
 
-  io.sockets.on('connection', function (socket) {
+  io.on('connection', function (socket) {
       socket.emit('message', { message: 'welcome to the chat' });
       socket.on('save_pad_content', function (data) {
           io.sockets.emit('message', data);
