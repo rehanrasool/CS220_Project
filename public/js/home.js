@@ -2,23 +2,36 @@
 
 $(function(){
 
+	var pg = require('pg');
+
 	// getting the id of the room from the url
 	var chimpad_user_id = Number(window.location.pathname.match(/\/home\/(\d+)$/)[1]);
 
-	$.ajax
-  	({
-      type: "POST",
-      //the url where you want to sent the userName and password to
-      url: window.location.href.replace(/^(https?:\/\/[^\/]+/,'$1:80/') + "scripts.php",
-      //json object to sent to the authentication url
-      data : {
-      get_user_pads: 1,
-      user_id : chimpad_user_id
-    } }).done(function(raw_data) {
-      
-      var data = JSON.parse(raw_data);
 
-  	});
+	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+		authenticate_query = 'SELECT id FROM user_table WHERE username = \'' + username + '\' AND password = \'' + password + '\';';
+		console.log(authenticate_query);
+		client.query(authenticate_query , function(err, result) {
+		  done();
+		  if (err)
+		   { console.error(err); response.send("Error " + err); }
+		  else
+		   { 
+
+		    //console.log(result.rows);
+		    //console.log(result.rows[0]);
+		    //console.log(result.rows[0]["id"]);
+		    
+		    //var id = result.rows[0]["id"];
+		    
+		    //response.send(result.rows);
+		    response.send(result.rows);
+		    // Redirect to the random room
+		    //response.redirect('/home/'+id);
+		    //response.render('home');
+		   }
+		});
+	});
 
 	// cache some jQuery objects
 	// var section = $(".section"),
