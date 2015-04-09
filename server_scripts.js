@@ -149,12 +149,36 @@ module.exports = function(app, io){
   });
 
   io.on('connection', function (socket) {
-      socket.emit('message', { message: 'welcome to the chat' });
-      socket.on('save_pad_content', function (data) {
-        console.log(data);
-         socket.emit('message', data);
+      socket.on('load',function(data){ 
+        socket.room = data;
+        socket.join(data);
+      });
+      socket.on('send_message', function (data) {
+          socket.broadcast.to(socket.room).emit('message', data);
       });
   });
 
+
+
 };
 
+
+function findClientsSocket(io, roomId, namespace) {
+  var res = [],
+    ns = io.of(namespace ||"/");    // the default namespace is "/"
+
+  if (ns) {
+    for (var id in ns.connected) {
+      if(roomId) {
+        var index = ns.connected[id].rooms.indexOf(roomId) ;
+        if(index !== -1) {
+          res.push(ns.connected[id]);
+        }
+      }
+      else {
+        res.push(ns.connected[id]);
+      }
+    }
+  }
+  return res;
+}

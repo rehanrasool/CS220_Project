@@ -1,5 +1,6 @@
 $(function(){
 
+  var socket = io();
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
 
@@ -20,19 +21,15 @@ $(function(){
 
   	});
 
-    var socket = io();
- 
+  socket.on('connect', function(){
+    socket.emit('load', chimpad_pad_id);
+  });
+
     socket.on('message', function (data) {
       console.log(data);
-        var messages = [];
+        //var messages = [];
         if(data.message) {
-            messages.push(data);
-            var html = '';
-            for(var i=0; i<messages.length; i++) {
-                html += '<b>' + (messages[i].username ? messages[i].username : 'Server') + ': </b>';
-                html += messages[i].message + '<br />';
-            }
-            $('#pad_content').html(html);
+            $('#pad_content').val(data.message);
 
         } else {
             console.log("There is a problem:", data);
@@ -41,7 +38,7 @@ $(function(){
  
     $("#pad_content").bind('keyup', function(){
        var text = $('#pad_content').val();
-        socket.emit('save_pad_content', { message: text, username: name });
+        socket.emit('send_message', { message: text });
     }); 
 
 
