@@ -136,8 +136,7 @@ module.exports = function(app, io) {
 
     app.post('/create_pad', function(request, response) {
       sess=request.session;
-      var chimpad_pad_id = request.body.pad_id;
-      var chimpad_pad_title = request.body.pad_content;
+      var chimpad_pad_title = request.body.pad_title;
       var chimpad_pad_user = sess.user_id;
       var date = new Date();
 
