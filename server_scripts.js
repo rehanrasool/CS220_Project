@@ -127,7 +127,7 @@ module.exports = function(app, io) {
          { console.error(err); response.send("Error " + err); }
         else
          { 
-            var chimpad_pad_id = result.rows;
+            var chimpad_pad_id = result.rows[0];
             console.log("pad created with id " + chimpad_pad_id);
 
             //response.send(result.rows);
