@@ -2,7 +2,7 @@ var pg = require('pg');
 var express = require('express');
 var bodyParser = require('body-parser');
 
-module.exports = function(app, io){
+module.exports = function(app, io) {
 
   app.use(express.static(__dirname + '/public'));
     // parse application/json
@@ -27,6 +27,8 @@ module.exports = function(app, io){
       });
     });
   })
+
+
 
 
   app.post('/signup', function(request, response) {
@@ -91,6 +93,60 @@ module.exports = function(app, io){
         get_all_pads_data = 'SELECT * FROM pad;';
 
         client.query(get_all_pads_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+    //save content on pressing the save button
+    app.post('/pad/:id', function(request, response) {
+      var chimpad_pad_id = request.body.pad_id;
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        check_pad_exists_query = 'SELECT * FROM pad WHERE id = ' + chimpad_pad_id + ';';
+
+        var result = client.query(check_pad_exists_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+        });
+
+        var date = new Date();
+       if(result.rows.length > 0){// if > 0 then present in table so -> update
+         save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = ' + date.getDate() + 'content =  ' + request.body.pad_content + 'last_modified_user = '+ ????? + ';';
+        
+         client.query(save_or_update_pad_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+        });
+
+       }else{ // insert
+         save_or_update_pad_query = 'INSERT INTO pad
+                                                (title,
+                                                  content,
+                                                  last_modified_timestamp,
+                                                  last_modified_user) 
+                                                  VALUES ("' 
+                                                    + request.body.pad_title + '","' 
+                                                    + request.body.pad_content + '","'
+                                                    + date.getDate() + '",' 
+                                                    + last_modified_user??? +';';
+        
+         client.query(save_or_update_pad_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+        });
+       }
+
+        client.query(authenticate_query , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
