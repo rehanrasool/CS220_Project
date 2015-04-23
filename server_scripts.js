@@ -120,7 +120,7 @@ module.exports = function(app, io) {
     var date = new Date();
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = "' + date.getDate() + '" ,content =  "' + chimpad_pad_content + '" ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
+      save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = \'' + date.getDate() + '\' ,content =  \'' + chimpad_pad_content + '\' ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
 
       client.query(save_or_update_pad_query , function(err, result) {
         done();
@@ -141,7 +141,7 @@ module.exports = function(app, io) {
     var date = new Date();
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES ("' + chimpad_pad_title + '","' + date.getDate() + '",' + chimpad_pad_user + ') RETURNING id;';
+      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\',\'' + date.getDate() + '\',' + chimpad_pad_user + ') RETURNING id;';
       console.log(save_or_update_pad_query);
       client.query(save_or_update_pad_query , function(err, result) {
         done();
