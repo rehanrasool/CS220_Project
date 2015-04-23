@@ -168,6 +168,7 @@ module.exports = function(app, io) {
       });
     });
   });
+  
 
   app.post('/get_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
@@ -176,6 +177,44 @@ module.exports = function(app, io) {
         authenticate_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
 
         client.query(authenticate_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+
+//gets all users
+  app.post('/get_all_users', function(request, response) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_all_users_data = 'SELECT * FROM user;';
+
+        client.query(get_all_users_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+   //gets a specific user with the provided id in the post request 
+  app.post('/get_user', function(request, response) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+
+        var user_id = request.body.user_id;// user id in the header
+
+        get_user_data = 'SELECT * FROM user WHERE id =' + user_id + ';';
+
+        client.query(get_user_data , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
