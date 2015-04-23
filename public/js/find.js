@@ -13,9 +13,16 @@ $(function(){
     	props = ["id", "title", "last_modified_timestamp", "last_modified_user"];
 		$.each(raw_data, function(i, pad) {
 		  var tr = $('<tr>');
-		  $.each(props, function(i, prop) {
-		    $('<td>').html(pad[prop]).appendTo(tr);  
-		  });
+      if (props == 'last_modified_timestamp') {
+        $.each(props, function(i, prop) {
+          $('<td>').html(timeSince(new Date(pad[prop]))).appendTo(tr);  
+        });
+      } else {
+        $.each(props, function(i, prop) {
+          $('<td>').html(pad[prop]).appendTo(tr);  
+        });
+      }
+		  
 		  tbody.append(tr);
 		});
 

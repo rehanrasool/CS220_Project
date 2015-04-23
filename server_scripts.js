@@ -77,7 +77,7 @@ module.exports = function(app, io) {
               user_pad_ids = user_pad_ids + "," + result.rows[row]['pad_id'];
             }
 
-            get_user_pads_data = 'SELECT * FROM pad WHERE id IN (' + user_pad_ids + ');';
+            get_user_pads_data = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id IN (' + user_pad_ids + ');';
 
               client.query(get_user_pads_data , function(err, result) {
                 done();
@@ -97,7 +97,7 @@ module.exports = function(app, io) {
 
   app.post('/get_all_pads', function(request, response) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_pads_data = 'SELECT * FROM pad;';
+        get_all_pads_data = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad;';
 
         client.query(get_all_pads_data , function(err, result) {
           done();
