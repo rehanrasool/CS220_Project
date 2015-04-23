@@ -111,60 +111,62 @@ module.exports = function(app, io) {
       });
   });
 
-    //save content on pressing the save button
-    app.post('/save_pad', function(request, response) {
-      sess=request.session;
-      var chimpad_pad_id = request.body.pad_id;
-      var chimpad_pad_content = request.body.pad_content;
-      var chimpad_pad_user = sess.user_id;
-      var date = new Date();
+  //save content on pressing the save button
+  app.post('/save_pad', function(request, response) {
+    sess=request.session;
+    var chimpad_pad_id = request.body.pad_id;
+    var chimpad_pad_content = request.body.pad_content;
+    var chimpad_pad_user = sess.user_id;
+    var date = new Date();
 
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = "' + date.getDate() + '" ,content =  "' + chimpad_pad_content + '" ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = "' + date.getDate() + '" ,content =  "' + chimpad_pad_content + '" ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
 
-        client.query(save_or_update_pad_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-           { 
-            response.send(result.rows);
-           }
-        });
+      client.query(save_or_update_pad_query , function(err, result) {
+        done();
+        if (err)
+         { console.error(err); response.send("Error " + err); }
+        else
+         { 
+          response.send(result.rows);
+         }
       });
+    });
   });
 
-    app.post('/create_pad', function(request, response) {
-      sess=request.session;
-      var chimpad_pad_title = request.body.pad_title;
-      var chimpad_pad_user = sess.user_id;
-      var date = new Date();
+  app.post('/create_pad', function(request, response) {
+    sess=request.session;
+    var chimpad_pad_title = request.body.pad_title;
+    var chimpad_pad_user = sess.user_id;
+    var date = new Date();
 
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES ("' + chimpad_pad_title + '","' + date.getDate() + '",' + chimpad_pad_user + ' RETURNING id;';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES ("' + chimpad_pad_title + '","' + date.getDate() + '",' + chimpad_pad_user + ' RETURNING id;';
 
-        client.query(save_or_update_pad_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-           { 
-              var chimpad_pad_id = result.rows;
-              console.log("pad created with id " + chimpad_pad_id);
-              //response.send(result.rows);
-              update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1;';
+      client.query(save_or_update_pad_query , function(err, result) {
+        done();
+        if (err)
+         { console.error(err); response.send("Error " + err); }
+        else
+         { 
+            var chimpad_pad_id = result.rows;
+            console.log("pad created with id " + chimpad_pad_id);
+            //response.send(result.rows);
+            update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1;';
 
-              client.query(update_user_pads_query , function(err, result) {
-                done();
-                if (err)
-                 { console.error(err); response.send("Error " + err); }
-                else
-                 { // send pad id to be redirected to it
-                  response.redirect('/pad/'+chimpad_pad_id);
-                 }
-           }
-        });
+            client.query(update_user_pads_query , function(err, result) {
+              done();
+              if (err)
+               { console.error(err); response.send("Error " + err); }
+              else
+               { // send pad id to be redirected to it
+                response.redirect('/pad/'+chimpad_pad_id);
+               }
+              });
+          }
+        
       });
+    });
   });
 
   app.post('/get_pad', function(request, response) {
