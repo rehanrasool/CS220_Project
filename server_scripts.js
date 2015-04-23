@@ -1,8 +1,13 @@
 var pg = require('pg');
 var express = require('express');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 
+
 module.exports = function(app, io) {
+
+  var sess;
+  app.use(session({secret: 'ssshhhhh'}));
 
   app.use(express.static(__dirname + '/public'));
     // parse application/json
@@ -29,9 +34,7 @@ module.exports = function(app, io) {
   })
 
 
-
-
-  app.post('/signup', function(request, response) {
+  app.post('/login', function(request, response) {
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       console.log("post received: %s %s", username, password);
@@ -46,7 +49,11 @@ module.exports = function(app, io) {
           else
            { 
             var id = result.rows[0]["id"];
-            global.user_id = id;
+
+            sess=request.session;
+            sess.user_id=id;
+            //global.user_id = id;
+
             response.redirect('/home/'+id);
            }
         });
@@ -70,7 +77,7 @@ module.exports = function(app, io) {
               user_pad_ids = user_pad_ids + "," + result.rows[row]['pad_id'];
             }
 
-            get_user_pads_data = 'SELECT * FROM pad WHERE id IN (' + user_pad_ids + ');';
+            get_user_pads_data = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id IN (' + user_pad_ids + ') ORDER BY last_modified_timestamp DESC;';
 
               client.query(get_user_pads_data , function(err, result) {
                 done();
@@ -90,7 +97,7 @@ module.exports = function(app, io) {
 
   app.post('/get_all_pads', function(request, response) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_pads_data = 'SELECT * FROM pad;';
+        get_all_pads_data = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad ORDER BY last_modified_timestamp DESC;';
 
         client.query(get_all_pads_data , function(err, result) {
           done();
@@ -104,104 +111,69 @@ module.exports = function(app, io) {
       });
   });
 
-  //gets all users
-  app.post('/get_all_users', function(request, response) {
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_users_data = 'SELECT * FROM user;';
 
-        client.query(get_all_users_data , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-           { 
-            response.send(result.rows);
-           }
-        });
+  app.post('/create_pad', function(request, response) {
+    sess=request.session;
+    var chimpad_pad_title = request.body.pad_title;
+    var chimpad_pad_user = sess.user_id;
+    //var date = new Date();
+
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
+      console.log(save_or_update_pad_query);
+      client.query(save_or_update_pad_query , function(err, result) {
+        done();
+        if (err)
+         { console.error(err); response.send("Error " + err); }
+        else
+         { 
+            var chimpad_pad_id = result.rows[0]['id'];
+            console.log("pad created with id " + chimpad_pad_id);
+
+            update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);';
+            console.log(update_user_pads_query);
+            client.query(update_user_pads_query , function(err, result) {
+              done();
+              if (err)
+               { console.error(err); response.send("Error " + err); }
+              else
+               { // send pad id to be redirected to it
+                response.redirect('/pad/'+chimpad_pad_id);
+               }
+              });
+          }
+        
       });
+    });
   });
 
-   //gets a specific user with the provided id in the post request 
-  app.post('/get_user', function(request, response) {
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  //save content on pressing the save button
+  app.post('/save_pad', function(request, response) {
+    sess=request.session;
+    var chimpad_pad_id = request.body.pad_id;
+    var chimpad_pad_content = request.body.pad_content;
+    var chimpad_pad_user = sess.user_id;
 
-        var user_id = request.body.user_id;// user id in the header
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  \'' + chimpad_pad_content + '\' ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
 
-        get_user_data = 'SELECT * FROM user WHERE id =' + user_id + ';';
-
-        client.query(get_user_data , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-           { 
-            response.send(result.rows);
-           }
-        });
+      client.query(save_or_update_pad_query , function(err, result) {
+        done();
+        if (err)
+         { console.error(err); response.send("Error " + err); }
+        else
+         { 
+          response.send(result.rows);
+         }
       });
-  });
-
-
-
-    //save content on pressing the save button
-    app.post('/pad/:id', function(request, response) {
-      var chimpad_pad_id = request.body.pad_id;
-
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        check_pad_exists_query = 'SELECT * FROM pad WHERE id = ' + chimpad_pad_id + ';';
-
-        var result = client.query(check_pad_exists_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-        });
-
-        var date = new Date();
-       if(result.rows.length > 0){// if > 0 then present in table so -> update
-         save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = ' + date.getDate() + 'content =  ' + request.body.pad_content + 'last_modified_user = '+ ????? + ';';
-        
-         client.query(save_or_update_pad_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-        });
-
-       }else{ // insert
-         save_or_update_pad_query = 'INSERT INTO pad
-                                                (title,
-                                                  content,
-                                                  last_modified_timestamp,
-                                                  last_modified_user) 
-                                                  VALUES ("' 
-                                                    + request.body.pad_title + '","' 
-                                                    + request.body.pad_content + '","'
-                                                    + date.getDate() + '",' 
-                                                    + last_modified_user??? +';';
-        
-         client.query(save_or_update_pad_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-        });
-       }
-
-        client.query(authenticate_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-           { 
-            response.send(result.rows);
-           }
-        });
-      });
+    });
   });
 
   app.post('/get_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        authenticate_query = 'SELECT * FROM pad WHERE id = ' + chimpad_pad_id + ';';
+        authenticate_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
 
         client.query(authenticate_query , function(err, result) {
           done();
@@ -236,7 +208,8 @@ module.exports = function(app, io) {
   });
 
   app.get('/home', function(request,response){
-    response.redirect('/home/'+global.user_id);
+    sess=request.session;
+    response.redirect('/home/'+sess.user_id);
   });
 
   app.get('/pad/:id', function(request,response){
