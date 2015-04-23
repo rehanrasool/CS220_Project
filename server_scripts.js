@@ -113,9 +113,10 @@ module.exports = function(app, io) {
 
     //save content on pressing the save button
     app.post('/save_pad', function(request, response) {
+      sess=request.session;
       var chimpad_pad_id = request.body.pad_id;
       var chimpad_pad_content = request.body.pad_content;
-      var chimpad_pad_user = request.body.pad_user;
+      var chimpad_pad_user = sess.user_id;
       var date = new Date();
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -134,9 +135,10 @@ module.exports = function(app, io) {
   });
 
     app.post('/create_pad', function(request, response) {
+      sess=request.session;
       var chimpad_pad_id = request.body.pad_id;
       var chimpad_pad_title = request.body.pad_content;
-      var chimpad_pad_user = request.body.pad_user;
+      var chimpad_pad_user = sess.user_id;
       var date = new Date();
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
