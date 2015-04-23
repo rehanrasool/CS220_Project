@@ -127,9 +127,9 @@ module.exports = function(app, io) {
          { console.error(err); response.send("Error " + err); }
         else
          { 
-            var chimpad_pad_id = result.rows[0];
+            var chimpad_pad_id = result.rows;
             console.log("pad created with id " + chimpad_pad_id);
-
+response.send(chimpad_pad_id);
             //response.send(result.rows);
             update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);';
             console.log(update_user_pads_query);
