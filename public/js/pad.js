@@ -42,7 +42,7 @@ $(function(){
     }); 
 
     $("#save_content_button").click(function(){
-       var content = $('#pad_content').val();
+       var chimpad_pad_content = $('#pad_content').val();
         $.ajax
           ({
             type: "POST",

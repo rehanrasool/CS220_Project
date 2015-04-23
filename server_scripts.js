@@ -153,7 +153,6 @@ module.exports = function(app, io) {
     var chimpad_pad_id = request.body.pad_id;
     var chimpad_pad_content = request.body.pad_content;
     var chimpad_pad_user = sess.user_id;
-    var date = new Date();
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  \'' + chimpad_pad_content + '\' ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
