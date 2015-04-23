@@ -51,16 +51,11 @@ $(function(){
             //json object to sent to the authentication url
             data : {
             pad_id : chimpad_pad_id,
-            pad_content : chimpad_pad_content,
-            pad_user : chimpad_pad_user
+            pad_content : chimpad_pad_content
           } }).done(function(raw_data) {
             
               var data = raw_data[0];
-              var data = raw_data[0];
-              //$('#pad_title').html(data['title']);
-              //$('#pad_content').val(data['content']);
-              //$('#pad_content_help_text').html('last modified: ' + data['last_modified_timestamp']);
-
+              location.reload();
           });
 
     }); 
