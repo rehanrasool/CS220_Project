@@ -4,8 +4,9 @@
 // 'node app.js' in your terminal
 
 
-var express = require('express'),
-	app = express();
+var express = require('express');
+var session = require('express-session');
+var app = express();
 
 // This is needed if the app is run on heroku:
 

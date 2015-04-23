@@ -41,6 +41,29 @@ $(function(){
         socket.emit('send_message', { message: text });
     }); 
 
+    $("#save_content_button").click(function(){
+       var content = $('#pad_content').val();
+        $.ajax
+          ({
+            type: "POST",
+            //the url where you want to sent the userName and password to
+            url: "/save_pad",
+            //json object to sent to the authentication url
+            data : {
+            pad_id : chimpad_pad_id,
+            pad_content : chimpad_pad_content,
+            pad_user : chimpad_pad_user
+          } }).done(function(raw_data) {
+            
+              var data = raw_data[0];
+              var data = raw_data[0];
+              //$('#pad_title').html(data['title']);
+              //$('#pad_content').val(data['content']);
+              //$('#pad_content_help_text').html('last modified: ' + data['last_modified_timestamp']);
+
+          });
+
+    }); 
 
 
 });

@@ -1,8 +1,13 @@
 var pg = require('pg');
 var express = require('express');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 
+
 module.exports = function(app, io) {
+
+  var sess;
+  app.use(session({secret: 'ssshhhhh'}));
 
   app.use(express.static(__dirname + '/public'));
     // parse application/json
@@ -29,7 +34,7 @@ module.exports = function(app, io) {
   })
 
 
-  app.post('/signup', function(request, response) {
+  app.post('/login', function(request, response) {
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       console.log("post received: %s %s", username, password);
@@ -44,7 +49,11 @@ module.exports = function(app, io) {
           else
            { 
             var id = result.rows[0]["id"];
-            global.user_id = id;
+
+            sess=request.session;
+            sess.user_id=id;
+            //global.user_id = id;
+
             response.redirect('/home/'+id);
            }
         });
@@ -103,54 +112,68 @@ module.exports = function(app, io) {
   });
 
     //save content on pressing the save button
-    app.post('/pad/:id', function(request, response) {
+    app.post('/save_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
+      var chimpad_pad_content = request.body.pad_content;
+      var chimpad_pad_user = request.body.pad_user;
+      var date = new Date();
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        check_pad_exists_query = 'SELECT * FROM pad WHERE id = ' + chimpad_pad_id + ';';
+        save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = "' + date.getDate() + '"" ,content =  "' + chimpad_pad_content + '"" ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
 
-        var result = client.query(check_pad_exists_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-        });
-
-        var date = new Date();
-       if(result.rows.length > 0){// if > 0 then present in table so -> update
-         save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = ' + date.getDate() + 'content =  ' + request.body.pad_content + 'last_modified_user = '+ ????? + ';';
-        
-         client.query(save_or_update_pad_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-        });
-
-       }else{ // insert
-         save_or_update_pad_query = 'INSERT INTO pad
-                                                (title,
-                                                  content,
-                                                  last_modified_timestamp,
-                                                  last_modified_user) 
-                                                  VALUES ("' 
-                                                    + request.body.pad_title + '","' 
-                                                    + request.body.pad_content + '","'
-                                                    + date.getDate() + '",' 
-                                                    + last_modified_user??? +';';
-        
-         client.query(save_or_update_pad_query , function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-        });
-       }
-
-        client.query(authenticate_query , function(err, result) {
+        client.query(save_or_update_pad_query , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
           else
            { 
             response.send(result.rows);
+           }
+        });
+      });
+  });
+
+    app.post('/create_pad', function(request, response) {
+      var chimpad_pad_id = request.body.pad_id;
+      var chimpad_pad_title = request.body.pad_content;
+      var chimpad_pad_user = request.body.pad_user;
+      var date = new Date();
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        save_or_update_pad_query = 'INSERT INTO pad
+                                                (title,
+                                                  last_modified_timestamp,
+                                                  last_modified_user) 
+                                                  VALUES ("' 
+                                                    + chimpad_pad_title + '","' 
+                                                    + date.getDate() + '",' 
+                                                    + chimpad_pad_user +' RETURNING id;';
+
+        client.query(save_or_update_pad_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+              //var chimpad_pad_id = ;
+              response.send(result.rows);
+/*              update_user_pads_query = 'INSERT INTO user_pad
+                                                    (user_id,
+                                                      pad_id,
+                                                      admin) 
+                                                      VALUES (' 
+                                                        + chimpad_pad_user + ',' 
+                                                        + chimpad_pad_id + ',
+                                                        1;';
+
+              client.query(update_user_pads_query , function(err, result) {
+                done();
+                if (err)
+                 { console.error(err); response.send("Error " + err); }
+                else
+                 { // send pad id to be redirected to it
+                  response.send(chimpad_pad_id);
+                 }*/
            }
         });
       });
@@ -195,6 +218,8 @@ module.exports = function(app, io) {
   });
 
   app.get('/home', function(request,response){
+    //sess=request.session;
+    //sess.user_id=id;
     response.redirect('/home/'+global.user_id);
   });
 
