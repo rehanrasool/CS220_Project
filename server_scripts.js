@@ -168,7 +168,7 @@ module.exports = function(app, io) {
       });
     });
   });
-  
+
 
   app.post('/get_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
@@ -188,6 +188,97 @@ module.exports = function(app, io) {
       });
   });
 
+ /**
+  If user is admin then all the people from the pad are deleted along with him.
+  If user is not an admin then only he is removed from the pad.
+ **/ 
+  app.post('/leave_pad', function(request, response) {
+      sess=request.session;
+      var chimpad_user_id = sess.user_id; // user's id
+      var chimpad_pad_id = request.body.pad_id;
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+
+        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + 'AND pad_id =' + chimpad_pad_id + ';';
+
+        client.query(check_if_user_admin_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+          { 
+            if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad
+               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
+               client.query(check_if_user_admin_query , function(err, result) {
+               done();
+               if (err)
+                 { console.error(err); response.send("Error " + err); }
+                else
+                {// all pads from user's now deleted, now delete the pad itself
+                  delete_pad(chimpad_pad_id);              
+                }
+            }
+            }else{// user not admin, so just remove him from the pad
+               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + 'AND user_id ='+ chimpad_user_id +';'; // delete all user's pad with this id
+               client.query(check_if_user_admin_query , function(err, result) {
+               done();
+               if (err)
+                 { console.error(err); response.send("Error " + err); }
+                else
+                {// all pads from user's now deleted, now delete the pad itself
+                  response.send("Success");
+                }
+                });
+       
+            });
+          });
+        });
+      });
+  });
+
+
+/**
+ Deletes a pad and return true if deletion was successful.
+ 
+ If user is admin and the pad exists then it is deleted -> return true
+ 
+ If user is not an admin then he does not have the permission to delete the 
+ pad and thus -> return false
+**/
+  app.post('/delete_pad', function(request, response) {
+        sess=request.session;
+        var chimpad_user_id = sess.user_id; // user's id
+        var chimpad_pad_id = request.body.pad_id; // pad's id
+
+        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + 'AND pad_id =' + chimpad_pad_id + ';';
+           client.query(check_if_user_admin_query , function(err, result) {
+            done();
+            if (err)
+             { console.error(err); response.send("Error " + err); }
+            else
+            { 
+              if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad -> return true
+                 remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
+                 client.query(check_if_user_admin_query , function(err, result) {
+                 done();
+                 if (err)
+                   { console.error(err); response.send("Error " + err); }
+                  else
+                  {// all pads from user's now deleted, now delete the pad itself
+                    delete_pad(chimpad_pad_id);  
+                    return true;            
+                  }
+              }
+              }else{// user not admin, so just return false
+                 return false;
+         
+              });
+            });
+          });
+        });
+    });
+    
 
 //gets all users
   app.post('/get_all_users', function(request, response) {
