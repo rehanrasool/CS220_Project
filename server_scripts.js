@@ -211,9 +211,8 @@ module.exports = function(app, io) {
   });
 
   app.get('/home', function(request,response){
-    //sess=request.session;
-    //sess.user_id=id;
-    response.redirect('/home/'+global.user_id);
+    sess=request.session;
+    response.redirect('/home/'+sess.user_id);
   });
 
   app.get('/pad/:id', function(request,response){
