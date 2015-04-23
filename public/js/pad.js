@@ -17,7 +17,7 @@ $(function(){
       	var data = raw_data[0];
         $('#pad_title').html(data['title']);
         $('#pad_content').val(data['content']);
-        $('#pad_content_help_text').html('last modified: ' + timeSince(new Date(data['last_modified_timestamp'])));
+        $('#pad_content_help_text').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
 
   	});
 
