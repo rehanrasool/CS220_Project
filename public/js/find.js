@@ -15,11 +15,13 @@ $(function(){
 		  var tr = $('<tr>');
       
         $.each(props, function(i, prop) {
-          if (prop == 'last_modified_timestamp') {
-            $('<td>').html(timeSince(new Date(pad[prop]))).appendTo(tr);
-          } else {
-            $('<td>').html(pad[prop]).appendTo(tr);  
-          }
+            if (prop == 'last_modified_timestamp') {
+              $('<td>').html(timeSince(new Date(pad[prop]))).appendTo(tr);
+            } else if (prop == 'title') {
+              $('<td>').html('<a href="..\\pad\\' + pad['id'] + '">' + pad[prop] + '</a>').appendTo(tr);  
+            } else {
+              $('<td>').html(pad[prop]).appendTo(tr);  
+            }
         });
 		  
 		  tbody.append(tr);
