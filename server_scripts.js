@@ -2,11 +2,7 @@ var pg = require('pg');
 var express = require('express');
 var bodyParser = require('body-parser');
 
-<<<<<<< HEAD
-module.exports = function(app, io){
-=======
 module.exports = function(app, io) {
->>>>>>> 6b325965eedfa1069215f6957984b8f325ae098a
 
   app.use(express.static(__dirname + '/public'));
     // parse application/json
@@ -33,11 +29,6 @@ module.exports = function(app, io) {
   })
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 6b325965eedfa1069215f6957984b8f325ae098a
   app.post('/signup', function(request, response) {
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
@@ -111,8 +102,6 @@ module.exports = function(app, io) {
       });
   });
 
-<<<<<<< HEAD
-=======
     //save content on pressing the save button
     app.post('/pad/:id', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
@@ -167,7 +156,6 @@ module.exports = function(app, io) {
       });
   });
 
->>>>>>> 6b325965eedfa1069215f6957984b8f325ae098a
   app.post('/get_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
 
