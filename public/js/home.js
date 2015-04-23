@@ -19,7 +19,7 @@ $(function(){
     		  var tr = $('<tr>');
     		  $.each(props, function(i, prop) {
             if (prop == 'last_modified_timestamp') {
-              $('<td>').html(timeSince(new Date(pad[prop]))).appendTo(tr);
+              $('<td>').html(moment(new Date(pad[prop])).fromNow()).appendTo(tr);
             } else if (prop == 'title') {
               $('<td>').html('<a href="..\\pad\\' + pad['id'] + '">' + pad[prop] + '</a>').appendTo(tr);  
             } else {
