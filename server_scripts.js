@@ -173,7 +173,7 @@ module.exports = function(app, io) {
       var chimpad_pad_id = request.body.pad_id;
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        authenticate_query = 'SELECT * FROM pad WHERE id = ' + chimpad_pad_id + ';';
+        authenticate_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
 
         client.query(authenticate_query , function(err, result) {
           done();
