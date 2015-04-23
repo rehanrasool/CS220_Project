@@ -104,6 +104,45 @@ module.exports = function(app, io) {
       });
   });
 
+  //gets all users
+  app.post('/get_all_users', function(request, response) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_all_users_data = 'SELECT * FROM user;';
+
+        client.query(get_all_users_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+   //gets a specific user with the provided id in the post request 
+  app.post('/get_user', function(request, response) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+
+        var user_id = request.body.user_id;// user id in the header
+
+        get_user_data = 'SELECT * FROM user WHERE id =' + user_id + ';';
+
+        client.query(get_user_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+
+
     //save content on pressing the save button
     app.post('/pad/:id', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
