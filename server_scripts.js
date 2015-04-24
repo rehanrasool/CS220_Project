@@ -351,8 +351,11 @@ module.exports = function(app, io) {
         socket.room = data;
         socket.join(data);
       });
-      socket.on('send_message', function (data) {
-          socket.broadcast.to(socket.room).emit('message', data);
+      socket.on('pad_message', function (data) {
+          socket.broadcast.to(socket.room).emit('text', data);
+      });
+      socket.on('send_message', function(data) {
+        socket.broadcast.to(socket.room).emit('message',data);
       });
   });
 

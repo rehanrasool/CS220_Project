@@ -26,7 +26,7 @@ $(function(){
     socket.emit('load', chimpad_pad_id);
   });
 
-    socket.on('message', function (data) {
+    socket.on('text', function (data) {
       console.log(data);
         //var messages = [];
         if(data.message) {
@@ -39,7 +39,7 @@ $(function(){
  
     $("#pad_content").bind('keyup', function(){
        var text = $('#pad_content').val();
-        socket.emit('send_message', { message: text });
+        socket.emit('pad_message', { message: text });
     }); 
 
     $("#save_content_button").click(function(){
