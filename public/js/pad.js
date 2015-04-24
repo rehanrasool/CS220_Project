@@ -29,8 +29,8 @@ $(function(){
     socket.on('text', function (data) {
       console.log(data);
         //var messages = [];
-        if(data.message) {
-            $('#pad_content').val(data.message);
+        if(data.content) {
+            $('#pad_content').val(data.content);
 
         } else {
             console.log("There is a problem:", data);
@@ -39,7 +39,7 @@ $(function(){
  
     $("#pad_content").bind('keyup', function(){
        var text = $('#pad_content').val();
-        socket.emit('pad_message', { message: text });
+        socket.emit('pad_message', { content: text });
     }); 
 
     $("#save_content_button").click(function(){

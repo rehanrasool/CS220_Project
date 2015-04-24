@@ -352,7 +352,7 @@ module.exports = function(app, io) {
         socket.join(data);
       });
       socket.on('pad_message', function (data) {
-          socket.broadcast.to(socket.room).emit('text', data);
+          socket.broadcast.to(socket.room).emit('content', data);
       });
       socket.on('send_message', function(data) {
         socket.broadcast.to(socket.room).emit('message',data);
