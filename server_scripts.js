@@ -203,12 +203,12 @@ module.exports = function(app, io) {
 
         client.query(check_if_user_admin_query , function(err, result) {
           done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-          { 
+          if (err){ 
+            console.error(err); response.send("Error " + err); 
+          }else{ 
+            
             if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad
-               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
+               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id = '+ chimpad_pad_id + ';'; // delete all user's pad with this id
                client.query(check_if_user_admin_query , function(err, result) {
                  done();
                  if (err)
@@ -219,7 +219,7 @@ module.exports = function(app, io) {
                   }
                 });
             }else{// user not admin, so just remove him from the pad
-               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + 'AND user_id ='+ chimpad_user_id +';'; // delete all user's pad with this id
+               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id = '+ chimpad_pad_id + ' AND user_id ='+ chimpad_user_id +';'; // delete all user's pad with this id
                client.query(check_if_user_admin_query , function(err, result) {
                done();
                if (err)
@@ -251,7 +251,7 @@ module.exports = function(app, io) {
         var chimpad_pad_id = request.body.pad_id; // pad's id
 
         pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + 'AND pad_id =' + chimpad_pad_id + ';';
+        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + ' AND pad_id =' + chimpad_pad_id + ';';
            client.query(check_if_user_admin_query , function(err, result) {
             done();
             if (err)
@@ -259,7 +259,7 @@ module.exports = function(app, io) {
             else
             { 
               if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad -> return true
-                 remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
+                 remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id = '+ chimpad_pad_id + ';'; // delete all user's pad with this id
                  client.query(check_if_user_admin_query , function(err, result) {
                  done();
                  if (err)
@@ -274,7 +274,7 @@ module.exports = function(app, io) {
                  return false;
          
               });
-            });
+            }
           });
         });
     });
