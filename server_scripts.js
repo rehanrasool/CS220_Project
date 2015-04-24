@@ -191,7 +191,7 @@ module.exports = function(app, io) {
  /**
   If user is admin then all the people from the pad are deleted along with him.
   If user is not an admin then only he is removed from the pad.
- **/ 
+
   app.post('/leave_pad', function(request, response) {
       sess=request.session;
       var chimpad_user_id = sess.user_id; // user's id
@@ -244,7 +244,7 @@ module.exports = function(app, io) {
  
  If user is not an admin then he does not have the permission to delete the 
  pad and thus -> return false
-**/
+
   app.post('/delete_pad', function(request, response) {
         sess=request.session;
         var chimpad_user_id = sess.user_id; // user's id
@@ -279,7 +279,7 @@ module.exports = function(app, io) {
         });
     });
     
-
+ **/ 
 //gets all users
   app.post('/get_all_users', function(request, response) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
