@@ -364,6 +364,7 @@ module.exports = function(app, io) {
   });
 
   app.get('/index', function(request, response) {
+    request.session.destroy();
     response.render('index');
   });
 
