@@ -247,7 +247,7 @@ module.exports = function(app, io) {
  If user is not an admin then he does not have the permission to delete the 
  pad and thus -> return false
 **/
-/*  app.post('/delete_pad', function(request, response) {
+   app.post('/delete_pad', function(request, response) {
         sess=request.session;
         var chimpad_user_id = sess.user_id; // user's id
         var chimpad_pad_id = request.body.pad_id; // pad's id
@@ -279,7 +279,7 @@ module.exports = function(app, io) {
             }
           });
         });
-    });*/
+    });
     
 //gets all users
   app.post('/get_all_users', function(request, response) {
