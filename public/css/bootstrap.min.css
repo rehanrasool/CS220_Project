@@ -29,3 +29,7 @@ body {
 	background-color: #D72626;
 	color: black;
 }
+
+textarea {
+  resize: vertical; /* user can resize vertically, but width is fixed */
+}
