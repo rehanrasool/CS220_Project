@@ -65,7 +65,7 @@ module.exports = function(app, io) {
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       var email = request.body.inputEmail;
-      console.log("post received: %s %s", username, password, emails);
+      console.log("post received: %s %s", username, password, email);
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 
