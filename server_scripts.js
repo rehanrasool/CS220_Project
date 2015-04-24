@@ -140,7 +140,6 @@ module.exports = function(app, io) {
       });
   });
 
-
   app.post('/create_pad', function(request, response) {
     sess=request.session;
     var chimpad_pad_title = request.body.pad_title;
