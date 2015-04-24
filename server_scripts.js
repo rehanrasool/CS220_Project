@@ -210,14 +210,14 @@ module.exports = function(app, io) {
             if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad
                remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
                client.query(check_if_user_admin_query , function(err, result) {
-               done();
-               if (err)
-                 { console.error(err); response.send("Error " + err); }
-                else
-                {// all pads from user's now deleted, now delete the pad itself
-                  delete_pad(chimpad_pad_id);              
-                }
-            }
+                 done();
+                 if (err)
+                   { console.error(err); response.send("Error " + err); }
+                  else
+                  {// all pads from user's now deleted, now delete the pad itself
+                    delete_pad(chimpad_pad_id);              
+                  }
+                });
             }else{// user not admin, so just remove him from the pad
                remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + 'AND user_id ='+ chimpad_user_id +';'; // delete all user's pad with this id
                client.query(check_if_user_admin_query , function(err, result) {
