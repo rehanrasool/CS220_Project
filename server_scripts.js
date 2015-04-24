@@ -61,11 +61,11 @@ module.exports = function(app, io) {
   });
 
 
-  app.post('/login', function(request, response) {
+  app.post('/signup', function(request, response) {
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       var email = request.body.inputEmail;
-      console.log("post received: %s %s", username, password, emails);
+      console.log("post received: %s %s", username, password, email);
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 
@@ -145,6 +145,8 @@ module.exports = function(app, io) {
     sess=request.session;
     var chimpad_pad_title = request.body.pad_title;
     var chimpad_pad_user = sess.user_id;
+    var user_name_array = request.body.user_list;
+    var dummy_return_message = "failed";
     //var date = new Date();
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -159,22 +161,63 @@ module.exports = function(app, io) {
             var chimpad_pad_id = result.rows[0]['id'];
             console.log("pad created with id " + chimpad_pad_id);
 
-            update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);';
-            console.log(update_user_pads_query);
+            //add admin first then add all other collaborators
+
+            update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);'; // not an admin
+
             client.query(update_user_pads_query , function(err, result) {
-              done();
-              if (err)
-               { console.error(err); response.send("Error " + err); }
-              else
-               { // send pad id to be redirected to it
-                response.redirect('/pad/'+chimpad_pad_id);
-               }
-              });
+                  done();
+                  if (err)
+                  { console.error(err); response.send("Error " + err); }
+                  else
+                  { // dummy message
+                    dummy_return_message =  "Success";
+                  }
+            });
+
+            for(username in user_name_array){
+              dummy_return_message = add_pad_to_users_pad(username,chimpad_pad_id);
+            }
+
+            console.log(dummy_return_message + "collaborators added");
+            
           }
         
       });
     });
   });
+
+  function add_pad_to_users_pad(username, pad_id){
+
+    var user_id = get_id_from_username(username);
+
+    update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
+
+    client.query(update_user_pads_query , function(err, result) {
+          done();
+          if (err)
+          { console.error(err); response.send("Error " + err); }
+          else
+          { // dummy message
+            return ("Success");
+          }
+    });
+  }
+
+  function get_id_from_username(username){
+    var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
+
+    client.query(get_username_from_id_query, function(err,result){
+      done();
+      if (err){
+        console.error(err);
+        response.send("Error " + err);
+      }else{
+        return result.rows[0]['id'];
+
+      }
+    });
+  }
 
   //save content on pressing the save button
   app.post('/save_pad', function(request, response) {
