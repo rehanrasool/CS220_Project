@@ -269,7 +269,7 @@ module.exports = function(app, io) {
                     delete_pad(chimpad_pad_id);  
                     return true;            
                   }
-              }
+              });
               }else{// user not admin, so just return false
                  return false;
          
