@@ -199,7 +199,7 @@ module.exports = function(app, io) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 
-        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + 'AND pad_id =' + chimpad_pad_id + ';';
+        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + ' AND pad_id =' + chimpad_pad_id + ';';
 
         client.query(check_if_user_admin_query , function(err, result) {
           done();

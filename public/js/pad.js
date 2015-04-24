@@ -17,7 +17,8 @@ $(function(){
       	var data = raw_data[0];
         $('#pad_title').html(data['title']);
         $('#pad_content').val(data['content']);
-        $('#pad_content_help_text').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
+        $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
+        $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
   	});
 
