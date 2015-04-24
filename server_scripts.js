@@ -239,12 +239,12 @@ module.exports = function(app, io) {
 
 /**
  Deletes a pad and return true if deletion was successful.
- **/
+ 
  If user is admin and the pad exists then it is deleted -> return true
  
  If user is not an admin then he does not have the permission to delete the 
  pad and thus -> return false
-
+**/
   app.post('/delete_pad', function(request, response) {
         sess=request.session;
         var chimpad_user_id = sess.user_id; // user's id
