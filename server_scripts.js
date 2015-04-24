@@ -61,7 +61,7 @@ module.exports = function(app, io) {
   });
 
 
-  app.post('/login', function(request, response) {
+  app.post('/signup', function(request, response) {
       var username = request.body.inputUsername;
       var password = request.body.inputPassword;
       var email = request.body.inputEmail;
