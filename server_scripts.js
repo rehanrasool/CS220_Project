@@ -191,7 +191,7 @@ module.exports = function(app, io) {
  /**
   If user is admin then all the people from the pad are deleted along with him.
   If user is not an admin then only he is removed from the pad.
-
+**/
   app.post('/leave_pad', function(request, response) {
       sess=request.session;
       var chimpad_user_id = sess.user_id; // user's id
@@ -239,7 +239,7 @@ module.exports = function(app, io) {
 
 /**
  Deletes a pad and return true if deletion was successful.
- 
+ **/
  If user is admin and the pad exists then it is deleted -> return true
  
  If user is not an admin then he does not have the permission to delete the 
