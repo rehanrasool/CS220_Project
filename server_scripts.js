@@ -60,6 +60,35 @@ module.exports = function(app, io) {
       });
   });
 
+
+  app.post('/login', function(request, response) {
+      var username = request.body.inputUsername;
+      var password = request.body.inputPassword;
+      var email = request.body.inputEmail;
+      console.log("post received: %s %s", username, password, emails);
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+
+        signup_query = 'INSERT INTO user_table (username,password,email) VALUES ( \'' + username + '\',\'' + password + '\',\'' + email + '\';';
+        console.log(signup_query);
+        client.query(signup_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            var id = result.rows[0]["id"];
+
+            sess=request.session;
+            sess.user_id=id;
+            //global.user_id = id;
+
+            response.redirect('/home/'+id);
+           }
+        });
+      });
+  });
+
   app.post('/get_user_pads', function(request, response) {
       var chimpad_user_id = request.body.user_id;
 
@@ -247,6 +276,8 @@ module.exports = function(app, io) {
  If user is not an admin then he does not have the permission to delete the 
  pad and thus -> return false
 **/
+
+/*
    app.post('/delete_pad', function(request, response) {
         sess=request.session;
         var chimpad_user_id = sess.user_id; // user's id
@@ -280,6 +311,8 @@ module.exports = function(app, io) {
           });
         });
     });
+
+*/
     
 //gets all users
   app.post('/get_all_users', function(request, response) {
