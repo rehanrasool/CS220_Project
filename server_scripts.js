@@ -69,7 +69,7 @@ module.exports = function(app, io) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 
-        signup_query = 'INSERT INTO user_table (username,password,email) VALUES ( \'' + username + '\',\'' + password + '\',\'' + email + '\');';
+        signup_query = 'INSERT INTO user_table (username,password,email) VALUES ( \'' + username + '\',\'' + password + '\',\'' + email + '\') RETURNING id;';
         console.log(signup_query);
         client.query(signup_query , function(err, result) {
           done();
