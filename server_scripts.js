@@ -352,14 +352,26 @@ module.exports = function(app, io) {
   });
 
   app.get('/create', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('/index');
+    }
     response.render('create');
   });
 
   app.get('/find', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('/index');
+    }
     response.render('find');
   });
 
   app.get('/about', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('/index');
+    }
     response.render('about');
   });
 
@@ -369,15 +381,26 @@ module.exports = function(app, io) {
   });
 
   app.get('/home/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('/index');
+    }
     response.render('home');
   });
 
   app.get('/home', function(request,response){
     sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('/index');
+    }
     response.redirect('/home/'+sess.user_id);
   });
 
   app.get('/pad/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('/index');
+    }
     response.render('pad');
   });
 
