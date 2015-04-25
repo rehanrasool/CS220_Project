@@ -69,7 +69,7 @@ module.exports = function(app, io) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 
-        signup_query = 'INSERT INTO user_table (username,password,email) VALUES ( \'' + username + '\',\'' + password + '\',\'' + email + '\';';
+        signup_query = 'INSERT INTO user_table (username,password,email) VALUES ( \'' + username + '\',\'' + password + '\',\'' + email + '\') RETURNING id;';
         console.log(signup_query);
         client.query(signup_query , function(err, result) {
           done();
@@ -394,31 +394,55 @@ module.exports = function(app, io) {
   });
 
   app.get('/create', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('create');
   });
 
   app.get('/find', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('find');
   });
 
   app.get('/about', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('about');
   });
 
   app.get('/index', function(request, response) {
+    request.session.destroy();
     response.render('index');
   });
 
   app.get('/home/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('home');
   });
 
   app.get('/home', function(request,response){
     sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.redirect('/home/'+sess.user_id);
   });
 
   app.get('/pad/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('pad');
   });
 
