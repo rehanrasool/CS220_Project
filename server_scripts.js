@@ -159,18 +159,7 @@ module.exports = function(app, io) {
 
             for(collaborator in collaborators_array){
               var collaborator_id = collaborators_array[collaborator];
-              //add admin first then add all other collaborators
-              update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + collaborator_id + ',' + chimpad_pad_id + ',1);'; // not an admin
-
-              client.query(update_user_pads_query , function(err, result) {
-                    done();
-                    if (err)
-                    { console.error(err); response.send("Error " + err); }
-                    else
-                    { // dummy message
-
-                    }
-              });
+              add_user_pads(collaborator_id,chimpad_pad_id);
             }
 
             response.redirect('/pad/' + chimpad_pad_id);
@@ -183,24 +172,18 @@ module.exports = function(app, io) {
 
   function add_user_pads(username, pad_id){
 
-        console.log('user name is: ' + username);
-
         pg.connect(process.env.DATABASE_URL, function(err, client, done) {
             var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
 
-            console.log('query is: ' + get_username_from_id_query);
-            console.log('client is: ' + client);
-
             client.query(get_username_from_id_query, function(err,result){
               done();
-              console.log('HEREHEHREHEREE!');
               if (err){
                 console.error(err);
                 response.send("Error " + err);
               }else{
-                user_id = result.rows[0]['id'];
+                pad_user_id = result.rows[0]['id'];
 
-                update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
+                update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + pad_user_id + ',' + pad_id + ',0);'; // not an admin
 
 
                 client.query(update_user_pads_query , function(err, result) {
