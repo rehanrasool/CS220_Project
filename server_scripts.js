@@ -169,9 +169,38 @@ module.exports = function(app, io) {
                   { // dummy message
                     for(collaborator in collaborators_array){
                       var collaborator_id = collaborators_array[collaborator];
-                      add_user_pads(collaborator_id,chimpad_pad_id);
+                      //add_user_pads(collaborator_id,chimpad_pad_id);
+
+                      var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + collaborator_id + '\'' + ';';
+
+                      client.query(get_username_from_id_query, function(err,result){
+                        done();
+                        if (err){
+                          console.error(err);
+                          response.send("Error " + err);
+                        }else{
+                          pad_user_id = result.rows[0]['id'];
+
+                          update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + pad_user_id + ',' + pad_id + ',0);'; // not an admin
+
+
+                          client.query(update_user_pads_query , function(err, result) {
+                                done();
+                                if (err)
+                                { console.error(err); response.send("Error " + err); }
+                                else
+                                { // dummy message
+
+                                }
+                          });
+
+                        }
+                      });
+
+
+
                     }
-                    response.send(chimpad_pad_id);
+                    response.send(result.rows);
                   }
             });
             
@@ -181,7 +210,7 @@ module.exports = function(app, io) {
     });
   });
 
-  function add_user_pads(username, pad_id){
+/*  function add_user_pads(username, pad_id){
 
         pg.connect(process.env.DATABASE_URL, function(err, client, done) {
             var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
@@ -211,7 +240,7 @@ module.exports = function(app, io) {
             });
 
          });
-  }
+  }*/
 
   //save content on pressing the save button
   app.post('/save_pad', function(request, response) {
