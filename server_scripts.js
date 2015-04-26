@@ -175,7 +175,7 @@ module.exports = function(app, io) {
             });
 
             for(username in user_name_array){
-              dummy_return_message = add_pad_to_users_pad(username,chimpad_pad_id);
+              dummy_return_message = add_pad_to_users_pad(username,chimpad_pad_id,client);
             }
 
             console.log(dummy_return_message + "collaborators added");
@@ -186,9 +186,9 @@ module.exports = function(app, io) {
     });
   });
 
-  function add_pad_to_users_pad(username, pad_id){
+  function add_pad_to_users_pad(username, pad_id, client){
 
-    var user_id = get_id_from_username(username);
+    var user_id = get_id_from_username(username,client);
 
     update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
 
@@ -203,7 +203,7 @@ module.exports = function(app, io) {
     });
   }
 
-  function get_id_from_username(username){
+  function get_id_from_username(username,client){
     var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
 
     client.query(get_username_from_id_query, function(err,result){
