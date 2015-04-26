@@ -190,30 +190,6 @@ console.log('original client is: ' + client);
     });
   });
 
-  function add_pad_to_users_pad(username, pad_id){
-
-    var user_id = get_id_from_username(username);
-
-     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        console.log('user id is: ' + user_id);
-        update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
-
-        console.log('query is: ' + update_user_pads_query);
-        console.log('client is: ' + client);
-
-        client.query(update_user_pads_query , function(err, result) {
-              done();
-              if (err)
-              { console.error(err); response.send("Error " + err); }
-              else
-              { // dummy message
-                return ("Success");
-              }
-        });
-
-    });
-  }
-
   function get_id_from_username(username){
 
         console.log('user name is: ' + username);
@@ -238,6 +214,31 @@ console.log('original client is: ' + client);
             });
 
          });
+  }
+
+  function add_pad_to_users_pad(username, pad_id){
+
+    var user_id = get_id_from_username(username);
+    console.log('user id is: ' + user_id);
+
+     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        
+        update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
+
+        console.log('query is: ' + update_user_pads_query);
+        console.log('client is: ' + client);
+
+        client.query(update_user_pads_query , function(err, result) {
+              done();
+              if (err)
+              { console.error(err); response.send("Error " + err); }
+              else
+              { // dummy message
+                return ("Success");
+              }
+        });
+
+    });
   }
 
   //save content on pressing the save button
