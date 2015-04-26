@@ -1,7 +1,7 @@
 
 $(function(){
 
-	var collaborator_array = new array();
+	var collaborator_array = new Array();
 
 	$('#add_collaborator_button').click(function(){
 		var collaborator_name = $('#inputCollaborators').val();
