@@ -144,9 +144,13 @@ module.exports = function(app, io) {
     sess=request.session;
     var chimpad_pad_title = request.body.pad_title;
     var chimpad_pad_user = sess.user_id;
-    var user_name_array = request.body.user_list;
+    var user_name_array = request.body.pad_collaborators;
     var dummy_return_message = "failed";
     //var date = new Date();
+console.log('array is: '+ user_name_array);
+
+console.log('array is: '+ user_name_array[0]);
+console.log('array is: '+ user_name_array[1]);
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
