@@ -179,7 +179,7 @@ console.log('array is: '+ user_name_array[1]);
             });
 console.log('original client is: ' + client);
             for(username in user_name_array){
-              dummy_return_message = add_pad_to_users_pad(username,chimpad_pad_id,client);
+              dummy_return_message = add_pad_to_users_pad(user_name_array[username],chimpad_pad_id,client);
             }
 
             console.log(dummy_return_message + "collaborators added");
