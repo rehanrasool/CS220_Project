@@ -179,7 +179,7 @@ console.log('array is: '+ user_name_array[1]);
             });
 console.log('original client is: ' + client);
             for(username in user_name_array){
-              dummy_return_message = add_pad_to_users_pad(user_name_array[username],chimpad_pad_id);
+              dummy_return_message = add_user_pads(user_name_array[username],chimpad_pad_id,add_pad_to_users_pad);
             }
 
             console.log(dummy_return_message + "collaborators added");
@@ -216,7 +216,15 @@ console.log('original client is: ' + client);
          });
   }
 
+
+  function add_user_pads (username, pad_id, add_pad_to_users_pad) {
+      var userid = get_id_from_username (username);
+      var returnval = add_pad_to_users_pad (userid);
+      return returnval;
+  }
+
   function add_pad_to_users_pad(username, pad_id){
+    
 
     var user_id = get_id_from_username(username);
     console.log('user id is: ' + user_id);
