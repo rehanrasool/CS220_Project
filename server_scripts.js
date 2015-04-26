@@ -211,7 +211,7 @@ module.exports = function(app, io) {
       });
     });
             
-    response.send({"id": chimpad_pad_id});
+    response.send([{"id": chimpad_pad_id}]);
   });
 
 /*  function add_user_pads(username, pad_id){
