@@ -173,7 +173,7 @@ module.exports = function(app, io) {
                     dummy_return_message =  "Success";
                   }
             });
-
+console.log('original client is: ' + client);
             for(username in user_name_array){
               dummy_return_message = add_pad_to_users_pad(username,chimpad_pad_id,client);
             }
@@ -190,7 +190,11 @@ module.exports = function(app, io) {
 
     var user_id = get_id_from_username(username,client);
 
+    console.log('user id is: ' + user_id);
     update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
+
+console.log('query is: ' + update_user_pads_query);
+console.log('client is: ' + client);
 
     client.query(update_user_pads_query , function(err, result) {
           done();
@@ -204,10 +208,16 @@ module.exports = function(app, io) {
   }
 
   function get_id_from_username(username,client){
+
+        console.log('user name is: ' + username);
     var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
+
+console.log('query is: ' + get_username_from_id_query);
+console.log('client is: ' + client);
 
     client.query(get_username_from_id_query, function(err,result){
       done();
+      console.log('HEREHEHREHEREE!');
       if (err){
         console.error(err);
         response.send("Error " + err);
