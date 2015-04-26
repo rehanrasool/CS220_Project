@@ -144,13 +144,7 @@ module.exports = function(app, io) {
     sess=request.session;
     var chimpad_pad_title = request.body.pad_title;
     var chimpad_pad_user = sess.user_id;
-    var user_name_array = request.body.pad_collaborators;
-    var dummy_return_message = "failed";
-    //var date = new Date();
-console.log('array is: '+ user_name_array);
-
-console.log('array is: '+ user_name_array[0]);
-console.log('array is: '+ user_name_array[1]);
+    var collaborators_array = request.body.pad_collaborators;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
@@ -162,27 +156,24 @@ console.log('array is: '+ user_name_array[1]);
         else
          { 
             var chimpad_pad_id = result.rows[0]['id'];
-            console.log("pad created with id " + chimpad_pad_id);
 
-            //add admin first then add all other collaborators
+            for(collaborator in collaborators_array){
+              var collaborator_id = collaborators_array[collaborator];
+              //add admin first then add all other collaborators
+              update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + collaborator_id + ',' + chimpad_pad_id + ',1);'; // not an admin
 
-            update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);'; // not an admin
+              client.query(update_user_pads_query , function(err, result) {
+                    done();
+                    if (err)
+                    { console.error(err); response.send("Error " + err); }
+                    else
+                    { // dummy message
 
-            client.query(update_user_pads_query , function(err, result) {
-                  done();
-                  if (err)
-                  { console.error(err); response.send("Error " + err); }
-                  else
-                  { // dummy message
-                    dummy_return_message =  "Success";
-                  }
-            });
-console.log('original client is: ' + client);
-            for(username in user_name_array){
-              dummy_return_message = add_user_pads(user_name_array[username],chimpad_pad_id,add_pad_to_users_pad);
+                    }
+              });
             }
 
-            console.log(dummy_return_message + "collaborators added");
+            response.redirect('/pad/' + chimpad_pad_id);
             
           }
         
@@ -190,7 +181,7 @@ console.log('original client is: ' + client);
     });
   });
 
-  function get_id_from_username(username){
+  function add_user_pads(username, pad_id){
 
         console.log('user name is: ' + username);
 
@@ -207,47 +198,25 @@ console.log('original client is: ' + client);
                 console.error(err);
                 response.send("Error " + err);
               }else{
-                console.log('resultttttttttttttttttttttttt is:' + result.rows[0]['id']);
-                return (result.rows[0]['id']);
+                user_id = result.rows[0]['id'];
+
+                update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
+
+
+                client.query(update_user_pads_query , function(err, result) {
+                      done();
+                      if (err)
+                      { console.error(err); response.send("Error " + err); }
+                      else
+                      { // dummy message
+                        return "success";
+                      }
+                });
 
               }
             });
 
          });
-  }
-
-
-  function add_user_pads (username, pad_id, add_pad_to_users_pad) {
-      var userid = get_id_from_username (username);
-      console.log('uuuuuuuuuuuuuuuuuuuuuuuuuser id is: ' + userid);
-      var returnval = add_pad_to_users_pad (userid);
-      return returnval;
-  }
-
-  function add_pad_to_users_pad(username, pad_id){
-    
-
-    //var user_id = get_id_from_username(username);
-    console.log('user id is: ' + user_id);
-
-     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        
-        update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
-
-        console.log('query is: ' + update_user_pads_query);
-        console.log('client is: ' + client);
-
-        client.query(update_user_pads_query , function(err, result) {
-              done();
-              if (err)
-              { console.error(err); response.send("Error " + err); }
-              else
-              { // dummy message
-                return ("Success");
-              }
-        });
-
-    });
   }
 
   //save content on pressing the save button
