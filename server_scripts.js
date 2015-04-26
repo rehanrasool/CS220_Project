@@ -219,6 +219,7 @@ console.log('original client is: ' + client);
 
   function add_user_pads (username, pad_id, add_pad_to_users_pad) {
       var userid = get_id_from_username (username);
+      console.log('uuuuuuuuuuuuuuuuuuuuuuuuuser id is: ' + userid);
       var returnval = add_pad_to_users_pad (userid);
       return returnval;
   }
@@ -226,7 +227,7 @@ console.log('original client is: ' + client);
   function add_pad_to_users_pad(username, pad_id){
     
 
-    var user_id = get_id_from_username(username);
+    //var user_id = get_id_from_username(username);
     console.log('user id is: ' + user_id);
 
      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
