@@ -171,7 +171,7 @@ module.exports = function(app, io) {
                       var collaborator_id = collaborators_array[collaborator];
                       add_user_pads(collaborator_id,chimpad_pad_id);
                     }
-                    response.redirect('/pad/' + chimpad_pad_id);
+                    response.render('/pad/' + chimpad_pad_id);
                   }
             });
             
@@ -203,7 +203,7 @@ module.exports = function(app, io) {
                       { console.error(err); response.send("Error " + err); }
                       else
                       { // dummy message
-                        
+
                       }
                 });
 
