@@ -203,7 +203,7 @@ module.exports = function(app, io) {
                       { console.error(err); response.send("Error " + err); }
                       else
                       { // dummy message
-                        return "success";
+                        
                       }
                 });
 
