@@ -181,7 +181,7 @@ module.exports = function(app, io) {
                         }else{
                           pad_user_id = result.rows[0]['id'];
 
-                          update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + pad_user_id + ',' + pad_id + ',0);'; // not an admin
+                          update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + pad_user_id + ',' + chimpad_pad_id + ',0);'; // not an admin
 
 
                           client.query(update_user_pads_query , function(err, result) {
@@ -200,7 +200,7 @@ module.exports = function(app, io) {
 
 
                     }
-                    response.redirect('/pad/' + chimpad_pad_id);
+                    response.send(chimpad_pad_id);
                   }
             });
             
