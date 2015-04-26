@@ -26,7 +26,7 @@ $("#create_button").click(function(){
             pad_title : chimpad_pad_title,
             pad_collaborators : collaborator_array
           } }).done(function(raw_data) {
-              var pad_id = raw_data;
+              var pad_id = raw_data[0]['id'];
               var url = "/pad/" + pad_id;    
 			  $(location).attr('href',url);          
           });
