@@ -179,7 +179,7 @@ console.log('array is: '+ user_name_array[1]);
             });
 console.log('original client is: ' + client);
             for(username in user_name_array){
-              dummy_return_message = add_pad_to_users_pad(user_name_array[username],chimpad_pad_id,client);
+              dummy_return_message = add_pad_to_users_pad(user_name_array[username],chimpad_pad_id,err,client,done);
             }
 
             console.log(dummy_return_message + "collaborators added");
@@ -190,9 +190,9 @@ console.log('original client is: ' + client);
     });
   });
 
-  function add_pad_to_users_pad(username, pad_id, client){
+  function add_pad_to_users_pad(username, pad_id, err, client, done){
 
-    var user_id = get_id_from_username(username,client);
+    var user_id = get_id_from_username(username,err,client,done);
 
     console.log('user id is: ' + user_id);
     update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
@@ -211,7 +211,7 @@ console.log('client is: ' + client);
     });
   }
 
-  function get_id_from_username(username,client){
+  function get_id_from_username(username,client, err, client, done){
 
         console.log('user name is: ' + username);
     var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
