@@ -179,7 +179,7 @@ console.log('array is: '+ user_name_array[1]);
             });
 console.log('original client is: ' + client);
             for(username in user_name_array){
-              dummy_return_message = add_pad_to_users_pad(user_name_array[username],chimpad_pad_id,err,client,done);
+              dummy_return_message = add_pad_to_users_pad(user_name_array[username],chimpad_pad_id);
             }
 
             console.log(dummy_return_message + "collaborators added");
@@ -190,46 +190,53 @@ console.log('original client is: ' + client);
     });
   });
 
-  function add_pad_to_users_pad(username, pad_id, err, client, done){
+  function add_pad_to_users_pad(username, pad_id){
 
-    var user_id = get_id_from_username(username,err,client,done);
+    var user_id = get_id_from_username(username);
 
-    console.log('user id is: ' + user_id);
-    update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
+     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        console.log('user id is: ' + user_id);
+        update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + user_id + ',' + pad_id + ',0);'; // not an admin
 
-console.log('query is: ' + update_user_pads_query);
-console.log('client is: ' + client);
+        console.log('query is: ' + update_user_pads_query);
+        console.log('client is: ' + client);
 
-    client.query(update_user_pads_query , function(err, result) {
-          done();
-          if (err)
-          { console.error(err); response.send("Error " + err); }
-          else
-          { // dummy message
-            return ("Success");
-          }
+        client.query(update_user_pads_query , function(err, result) {
+              done();
+              if (err)
+              { console.error(err); response.send("Error " + err); }
+              else
+              { // dummy message
+                return ("Success");
+              }
+        });
+
     });
   }
 
-  function get_id_from_username(username,client, err, client, done){
+  function get_id_from_username(username){
 
         console.log('user name is: ' + username);
-    var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
 
-console.log('query is: ' + get_username_from_id_query);
-console.log('client is: ' + client);
+        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+            var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
 
-    client.query(get_username_from_id_query, function(err,result){
-      done();
-      console.log('HEREHEHREHEREE!');
-      if (err){
-        console.error(err);
-        response.send("Error " + err);
-      }else{
-        return result.rows[0]['id'];
+            console.log('query is: ' + get_username_from_id_query);
+            console.log('client is: ' + client);
 
-      }
-    });
+            client.query(get_username_from_id_query, function(err,result){
+              done();
+              console.log('HEREHEHREHEREE!');
+              if (err){
+                console.error(err);
+                response.send("Error " + err);
+              }else{
+                return result.rows[0]['id'];
+
+              }
+            });
+
+         });
   }
 
   //save content on pressing the save button
