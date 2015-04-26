@@ -231,7 +231,7 @@ console.log('original client is: ' + client);
                 console.error(err);
                 response.send("Error " + err);
               }else{
-                console.log('resultttttttttttttttttttttttt is:' + result.rows);
+                console.log('resultttttttttttttttttttttttt is:' + result.rows[0]['id']);
                 return result.rows[0]['id'];
 
               }
