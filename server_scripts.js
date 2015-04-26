@@ -157,12 +157,23 @@ module.exports = function(app, io) {
          { 
             var chimpad_pad_id = result.rows[0]['id'];
 
-            for(collaborator in collaborators_array){
-              var collaborator_id = collaborators_array[collaborator];
-              add_user_pads(collaborator_id,chimpad_pad_id);
-            }
 
-            response.redirect('/pad/' + chimpad_pad_id);
+            update_admin_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);'; // not an admin
+
+
+            client.query(update_admin_pads_query , function(err, result) {
+                  done();
+                  if (err)
+                  { console.error(err); response.send("Error " + err); }
+                  else
+                  { // dummy message
+                    for(collaborator in collaborators_array){
+                      var collaborator_id = collaborators_array[collaborator];
+                      add_user_pads(collaborator_id,chimpad_pad_id);
+                    }
+                    response.redirect('/pad/' + chimpad_pad_id);
+                  }
+            });
             
           }
         
