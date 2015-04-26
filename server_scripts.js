@@ -200,7 +200,7 @@ module.exports = function(app, io) {
 
 
                     }
-                    response.send(result.rows);
+                    response.redirect('/pad/' + chimpad_pad_id);
                   }
             });
             
