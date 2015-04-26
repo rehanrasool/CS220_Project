@@ -146,6 +146,8 @@ module.exports = function(app, io) {
     var chimpad_pad_user = sess.user_id;
     var collaborators_array = request.body.pad_collaborators;
 
+    var chimpad_pad_id = 1;
+
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
       console.log(save_or_update_pad_query);
@@ -155,7 +157,7 @@ module.exports = function(app, io) {
          { console.error(err); response.send("Error " + err); }
         else
          { 
-            var chimpad_pad_id = result.rows[0]['id'];
+            chimpad_pad_id = result.rows[0]['id'];
 
 
             update_admin_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);'; // not an admin
@@ -205,11 +207,11 @@ module.exports = function(app, io) {
             });
             
           }
-        
+          
       });
     });
-            response.send(chimpad_pad_id);
-
+            
+    response.send(chimpad_pad_id);
   });
 
 /*  function add_user_pads(username, pad_id){
