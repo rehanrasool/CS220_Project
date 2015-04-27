@@ -25,11 +25,11 @@ $(function(){
 	            data : {
 	            chimpad_list_text : text
 	          }}).done(function(raw_data) {
+
+	          	var data = raw_data;
       
-			      var tbody = $('#all_pads_table tbody'),
-			    	props = ["id", "title", "last_modified_timestamp", "last_modified_user"];
-			    	alert(raw_data);
-					$.each(raw_data, function(key, value) {
+			      alert(data);
+					$.each(data, function(key, value) {
 						
 						$('#collaborators_list').append("<option value='" + value[key] + "/>");
 					
