@@ -31,7 +31,7 @@ $(function(){
 			      alert(data);
 					$.each(data, function(key, value) {
 						
-						$('#collaborators_list').append("<option value='" + value[key] + "/>");
+						$('#collaborators_list').append('<option value="' + key['username'] + '"/>');
 					
   					});
 
