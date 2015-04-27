@@ -27,7 +27,7 @@ $(function(){
 	          }}).done(function(raw_data) {
 
 	          	var data = raw_data;
-      
+      			$('#collaborators_list').empty();
 				$.each(data, function(key, value) {
 					$('#collaborators_list').append('<option value="' + value['username'] + '"/>');
 				});
