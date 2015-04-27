@@ -31,8 +31,7 @@ $(function(){
 			      alert(data);
 					$.each(data, function(key, value) {
 						
-						$('#collaborators_list').append('<option value="' + key['username'] + '"/>');
-					
+						$('#collaborators_list').append('<option value="' + value['username'] + '"/>');
   					});
 
     });
