@@ -151,6 +151,7 @@ module.exports = function(app, io) {
            { console.error(err); response.send("Error " + err); }
           else
            {
+            console.log('USERNAMEEEEEEE  ' + result.rows[0]['username']);
             response.send(result.rows);
            }
         });
