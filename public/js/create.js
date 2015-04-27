@@ -15,22 +15,27 @@ $(function(){
 
 	$("#collaborator_search").bind('keyup', function(){
        var text = $('#collaborator_search').val();
-       alert(text);
-        /* $.ajax
+       //alert(text);
+         $.ajax
 	          ({
 	            type: "POST",
 	            //the url where you want to sent the userName and password to
-	            url: "/create_pad",
+	            url: "/search_collaborator",
 	            //json object to sent to the authentication url
 	            data : {
-	            pad_title : chimpad_pad_title,
-	            pad_collaborators : collaborator_array
+	            chimpad_list_text : text
 	          }}).done(function(raw_data) {
-	              var pad_id = raw_data[0]['id'];
-	              var url = "/pad/" + pad_id;    
-				  $(location).attr('href',url);          
-	      		});*/
-    }); 
+      
+			      var tbody = $('#all_pads_table tbody'),
+			    	props = ["id", "title", "last_modified_timestamp", "last_modified_user"];
+					$.each(raw_data, function(i, pad) {
+						
+						$('#collaborators_list').append("<option value='" + pad['username'] + "/>");
+					
+  					});
+
+    });
+});     
 
 
 

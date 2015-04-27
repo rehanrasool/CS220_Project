@@ -140,6 +140,23 @@ module.exports = function(app, io) {
       });
   });
 
+  app.post('/search_collaborator', function(request, response) {
+    var potential_name = request.body.chimpad_list_text;
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_all_pads_data = 'SELECT username FROM user_table WHERE username like \'' + potential_name + '\' ;';
+
+        client.query(get_all_pads_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           {
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
   app.post('/create_pad', function(request, response) {
     sess=request.session;
     var chimpad_pad_title = request.body.pad_title;
