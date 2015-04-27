@@ -28,11 +28,9 @@ $(function(){
 
 	          	var data = raw_data;
       
-			      alert(data);
-					$.each(data, function(key, value) {
-						
-						$('#collaborators_list').append('<option value="' + value['username'] + '"/>');
-  					});
+				$.each(data, function(key, value) {
+					$('#collaborators_list').append('<option value="' + value['username'] + '"/>');
+				});
 
     });
 });     
