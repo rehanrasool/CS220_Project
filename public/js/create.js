@@ -13,7 +13,7 @@ $(function(){
 		}
 	});
 
-	$("#collaborator_search").bind('keyup', function(){
+	$("#collaborator_search").on('input', function(){
        var text = $('#collaborator_search').val();
        //alert(text);
          $.ajax
