@@ -28,9 +28,9 @@ $(function(){
       
 			      var tbody = $('#all_pads_table tbody'),
 			    	props = ["id", "title", "last_modified_timestamp", "last_modified_user"];
-					$.each(raw_data, function(i, pad) {
+					$.each(raw_data, function(key, value) {
 						
-						$('#collaborators_list').append("<option value='" + pad['username'] + "/>");
+						$('#collaborators_list').append("<option value='" + value[key] + "/>");
 					
   					});
 
