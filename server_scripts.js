@@ -1,13 +1,25 @@
 var pg = require('pg');
 var express = require('express');
-var session = require('express-session');
+//var session = require('express-session');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser')();
+var session = require('cookie-session')({ secret: 'secret' };
 
 
 module.exports = function(app, io) {
 
-  var sess;
-  app.use(session({secret: 'ssshhhhh'}));
+  //var sess;
+  //app.use(session({secret: 'ssshhhhh'}));
+  app.use(cookieParser);
+  app.use(session);
+  io.use(function(socket, next) {
+    var req = socket.handshake;
+    var res = {};
+    cookieParser(req, res, function(err) {
+        if (err) return next(err);
+        session(req, res, next);
+    });
+  });
 
   app.use(express.static(__dirname + '/public'));
     // parse application/json
@@ -491,6 +503,7 @@ module.exports = function(app, io) {
   });
 
   io.on('connection', function (socket) {
+      console.log("Session: ", socket.handshake.session);
       socket.on('load',function(data){ 
         socket.room = data;
         socket.join(data);
@@ -500,9 +513,9 @@ module.exports = function(app, io) {
       });
       socket.on('messenger_send',function (data){
         io.sockets.in(socket.room).emit('text',data);
+
       });
   });
-
 
 
 };
