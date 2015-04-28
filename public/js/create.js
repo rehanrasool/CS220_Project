@@ -8,7 +8,7 @@ $(function(){
 		if(collaborator_name != ""){
 			collaborator_array.push(collaborator_name);
 			var current_names = $('#collaborators_name').html();
-			if($('#collaborators_name').val() == ""){
+			if($('#collaborators_name').html() == ""){
 				$('#collaborators_name').html(collaborator_name + " , ")
 			}else{
 				$('#collaborators_name').html(current_names + " , " + collaborator_name);
