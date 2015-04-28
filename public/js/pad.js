@@ -36,10 +36,12 @@ $(function(){
         var html = '';
         var messenger= $('#pad_messages');
 
+
         for(var i=0;i<data.length;i++) {
-          html+=data[i].user_name+": "+data[i].message_text+"\n";
+          html+='<div class=\"col-lg-4\">' + data[i].user_name + '</div><div class=\"col-lg-4 col-lg-offset-4\">' + data[i].time_stamp + '</div><div class=\"col-lg-12\">' + data[i].message_text + '</div>';
+          //data[i].user_name+": "+data[i].message_text+"\n";
         }
-        messenger.val(html);
+        messenger.html(html);
         //location.reload();
     });
 
