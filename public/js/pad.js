@@ -75,7 +75,7 @@ $(function(){
           html+=messages[i].username+": "+messages[i].message+"\n";
         }*/
         var html=data.user_name+": "+data.message+"\n";
-        messenger.val(messenger.val() + html);
+        messenger.html(messenger.html() + html);
       }
       else
       {
