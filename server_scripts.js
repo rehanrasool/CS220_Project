@@ -298,14 +298,54 @@ module.exports = function(app, io) {
     });
   });
 
+  app.post('/get_messages', function(request, response) {
+      var chimpad_pad_id = request.body.pad_id;
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_messages_query = 'SELECT pad_id,user_id,user_name,content,date_part(\'epoch\',time_stamp)*1000 as time_stamp FROM messages WHERE pad_id = ' + chimpad_pad_id + ' ORDER BY time_stamp DESC;';
+
+        client.query(get_messages_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+  //save content on pressing the save button
+  app.post('/send_message', function(request, response) {
+    sess=request.session;
+    var chimpad_pad_id = request.body.pad_id;
+    var chimpad_message_content = request.body.message_text;
+    var chimpad_pad_user = sess.user_id;
+    var chimpad_pad_username = sess.user_name;
+
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      insert_message_query = 'INSERT INTO messages(pad_id,user_id,user_name,content,time_stamp) VALUES (' + chimpad_pad_id + ',' + chimpad_pad_user + ',\'' + chimpad_pad_username + '\',\'' + chimpad_message_content + '\', NOW() );';
+
+      client.query(insert_message_query , function(err, result) {
+        done();
+        if (err)
+         { console.error(err); response.send("Error " + err); }
+        else
+         { 
+          response.send(result.rows);
+         }
+      });
+    });
+  });
 
   app.post('/get_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        authenticate_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
+        get_pad_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
 
-        client.query(authenticate_query , function(err, result) {
+        client.query(get_pad_query , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }

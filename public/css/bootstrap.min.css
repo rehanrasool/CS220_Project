@@ -32,4 +32,5 @@ body {
 
 textarea {
   resize: vertical; /* user can resize vertically, but width is fixed */
+  overflow-y: scroll;
 }

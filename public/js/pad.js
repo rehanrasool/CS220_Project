@@ -22,6 +22,20 @@ $(function(){
 
   	});
 
+    $.ajax
+    ({
+      type: "POST",
+      //the url where you want to sent the userName and password to
+      url: "/get_messages",
+      //json object to sent to the authentication url
+      data : {
+      pad_id : chimpad_pad_id
+    } }).done(function(raw_data) {
+      
+        var data = raw_data[0];
+        //location.reload();
+    });
+
   socket.on('connect', function(){
     socket.emit('load', chimpad_pad_id);
   });
@@ -53,17 +67,34 @@ $(function(){
         html+=messages[i].username+": "+messages[i].message+"\n";
       }
       messenger.val(html);
-    }
-    else
-    {
-      console.log(data);
-    }
+      }
+      else
+      {
+        console.log(data);
+      }
     });
+
     //Adding send message functionality to it 
     $('#send_message_button').click(function(){
-      var text=$('#pad_input_message').val();
+      var message_text=$('#pad_input_message').val();
       $('#pad_input_message').val('');
-      socket.emit('messenger_send',{message:text});
+      socket.emit('messenger_send',{message:message_text});
+
+      $.ajax
+        ({
+          type: "POST",
+          //the url where you want to sent the userName and password to
+          url: "/send_message",
+          //json object to sent to the authentication url
+          data : {
+          pad_id : chimpad_pad_id,
+          message_content : message_text
+        } }).done(function(raw_data) {
+          
+            var data = raw_data[0];
+            //location.reload();
+        });
+
     });
 
     $("#save_content_button").click(function(){
@@ -80,7 +111,7 @@ $(function(){
           } }).done(function(raw_data) {
             
               var data = raw_data[0];
-              location.reload();
+              //location.reload();
           });
 
     }); 
