@@ -51,9 +51,14 @@ $(function(){
         console.log("There is a problem:",data);
       }
     });
-    $('#pad_messages').bind('keyup',function(){
-      var text=$('#pad_messages').val();
-      socket.emit('messenger_send',{message:text});
+    // $('#pad_messages').bind('keyup',function(){
+    //   var text=$('#pad_messages').val();
+    //   socket.emit('messenger_send',{message:text});
+    // });
+    //Adding send message functionality to it 
+    $('#send_message_messenger').click(function(){
+      var text=$('#pad_input_message').val();
+      socket.emit('messenger_send',{message : text});
     });
 
     $("#save_content_button").click(function(){
