@@ -325,7 +325,7 @@ module.exports = function(app, io) {
     var chimpad_pad_username = sess.user_name;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      insert_message_query = 'INSERT INTO messages(pad_id,user_id,user_name,content,time_stamp) VALUES (' + chimpad_pad_id + ',' + chimpad_pad_user + ',\'' + chimpad_pad_username + '\',\'' + chimpad_message_content + '\', NOW() );';
+      insert_message_query = 'INSERT INTO messages(pad_id,user_id,user_name,content as message_text,time_stamp) VALUES (' + chimpad_pad_id + ',' + chimpad_pad_user + ',\'' + chimpad_pad_username + '\',\'' + chimpad_message_content + '\', NOW() );';
 
       client.query(insert_message_query , function(err, result) {
         done();

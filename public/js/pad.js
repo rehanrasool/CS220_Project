@@ -32,7 +32,13 @@ $(function(){
       pad_id : chimpad_pad_id
     } }).done(function(raw_data) {
       
-        var data = raw_data[0];
+        var data = raw_data;
+
+        var messenger= $('#pad_messages');
+        for(var i=0;i<data.length;i++) {
+          html+=data[i].user_name+": "+data[i].message_text+"\n";
+        }
+        messenger.val(html);
         //location.reload();
     });
 
