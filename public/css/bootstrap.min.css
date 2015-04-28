@@ -34,3 +34,7 @@ textarea {
   resize: vertical; /* user can resize vertically, but width is fixed */
   overflow-y: scroll;
 }
+
+#pad_messages {
+  overflow-y: scroll;
+}
