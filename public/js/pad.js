@@ -38,7 +38,7 @@ $(function(){
 
 
         for(var i=0;i<data.length;i++) {
-          html+='<div class=\"col-lg-6\"><strong>' + data[i].user_name + '</strong></div><div class=\"col-lg-6 text-right\">' + moment(new Date(data[i].time_stamp)).fromNow() + '</div><div class=\"col-lg-12\">' + data[i].message_text + '</div><br>';
+          html+='<div class=\"col-lg-6\"><strong>' + data[i].user_name + '</strong></div><div class=\"col-lg-6 text-right\">' + moment(new Date(data[i].time_stamp)).fromNow() + '</div><div class=\"col-lg-12\">' + data[i].message_text + '</div><div class=\"col-lg-12\">&nbsp;</div>';
           //data[i].user_name+": "+data[i].message_text+"\n";
         }
         messenger.html(html);
@@ -69,6 +69,8 @@ $(function(){
      //Added functions
     socket.on('messenger_sent',function (data){
       var messenger= $('#pad_messages');
+      var html = '';
+
       if(data.message)
       {
 /*      messages.push({message:data.message, user:data.user_id, username:data.user_name});
@@ -77,8 +79,10 @@ $(function(){
         {
           html+=messages[i].username+": "+messages[i].message+"\n";
         }*/
-        var html=data.user_name+": "+data.message+"\n";
+        html='<div class=\"col-lg-6\"><strong>' + data.user_name + '</strong></div><div class=\"col-lg-6 text-right\">' + moment(new Date(data.time_stamp)).fromNow() + '</div><div class=\"col-lg-12\">' + data.message + '</div><div class=\"col-lg-12\">&nbsp;</div>';
+        //var html=data.user_name+": "+data.message+"\n";
         messenger.html(messenger.html() + html);
+        messenger.animate({ scrollTop: messenger[0].scrollHeight}, 1000);
       }
       else
       {
