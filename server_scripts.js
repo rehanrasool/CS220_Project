@@ -60,6 +60,35 @@ module.exports = function(app, io) {
       });
   });
 
+
+  app.post('/signup', function(request, response) {
+      var username = request.body.inputUsername;
+      var password = request.body.inputPassword;
+      var email = request.body.inputEmail;
+      console.log("post received: %s %s", username, password, email);
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+
+        signup_query = 'INSERT INTO user_table (username,password,email) VALUES ( \'' + username + '\',\'' + password + '\',\'' + email + '\') RETURNING id;';
+        console.log(signup_query);
+        client.query(signup_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            var id = result.rows[0]["id"];
+
+            sess=request.session;
+            sess.user_id=id;
+            //global.user_id = id;
+
+            response.redirect('/home/'+id);
+           }
+        });
+      });
+  });
+
   app.post('/get_user_pads', function(request, response) {
       var chimpad_user_id = request.body.user_id;
 
@@ -111,12 +140,30 @@ module.exports = function(app, io) {
       });
   });
 
+  app.post('/search_collaborator', function(request, response) {
+    var potential_name = request.body.chimpad_list_text;
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_all_pads_data = 'SELECT username FROM user_table WHERE username like \'' + potential_name + '%\' ;';
+
+        client.query(get_all_pads_data , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           {
+            response.send(result.rows);
+           }
+        });
+      });
+  });
 
   app.post('/create_pad', function(request, response) {
     sess=request.session;
     var chimpad_pad_title = request.body.pad_title;
     var chimpad_pad_user = sess.user_id;
-    //var date = new Date();
+    var collaborators_array = request.body.pad_collaborators;
+
+    var chimpad_pad_id = 1;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
@@ -127,25 +174,93 @@ module.exports = function(app, io) {
          { console.error(err); response.send("Error " + err); }
         else
          { 
-            var chimpad_pad_id = result.rows[0]['id'];
-            console.log("pad created with id " + chimpad_pad_id);
+            chimpad_pad_id = result.rows[0]['id'];
 
-            update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);';
-            console.log(update_user_pads_query);
-            client.query(update_user_pads_query , function(err, result) {
-              done();
-              if (err)
-               { console.error(err); response.send("Error " + err); }
-              else
-               { // send pad id to be redirected to it
-                response.redirect('/pad/'+chimpad_pad_id);
-               }
-              });
+
+            update_admin_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);'; // not an admin
+
+
+            client.query(update_admin_pads_query , function(err, result) {
+                  done();
+                  if (err)
+                  { console.error(err); response.send("Error " + err); }
+                  else
+                  { // dummy message
+                    for(collaborator in collaborators_array){
+                      var collaborator_id = collaborators_array[collaborator];
+                      //add_user_pads(collaborator_id,chimpad_pad_id);
+
+                      var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + collaborator_id + '\'' + ';';
+
+                      client.query(get_username_from_id_query, function(err,result){
+                        done();
+                        if (err){
+                          console.error(err);
+                          response.send("Error " + err);
+                        }else{
+                          pad_user_id = result.rows[0]['id'];
+
+                          update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + pad_user_id + ',' + chimpad_pad_id + ',0);'; // not an admin
+
+
+                          client.query(update_user_pads_query , function(err, result) {
+                                done();
+                                if (err)
+                                { console.error(err); response.send("Error " + err); }
+                                else
+                                { // dummy message
+
+                                }
+                          });
+
+                        }
+                      });
+
+
+
+                    }
+
+                  }
+            });
+            response.send([{"id": chimpad_pad_id}]);
           }
-        
+          
       });
     });
+            
   });
+
+/*  function add_user_pads(username, pad_id){
+
+        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+            var get_username_from_id_query = 'SELECT id from user_table WHERE username = \'' + username + '\'' + ';';
+
+            client.query(get_username_from_id_query, function(err,result){
+              done();
+              if (err){
+                console.error(err);
+                response.send("Error " + err);
+              }else{
+                pad_user_id = result.rows[0]['id'];
+
+                update_user_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + pad_user_id + ',' + pad_id + ',0);'; // not an admin
+
+
+                client.query(update_user_pads_query , function(err, result) {
+                      done();
+                      if (err)
+                      { console.error(err); response.send("Error " + err); }
+                      else
+                      { // dummy message
+
+                      }
+                });
+
+              }
+            });
+
+         });
+  }*/
 
   //save content on pressing the save button
   app.post('/save_pad', function(request, response) {
@@ -188,10 +303,10 @@ module.exports = function(app, io) {
       });
   });
 
- /**
+/**
   If user is admin then all the people from the pad are deleted along with him.
   If user is not an admin then only he is removed from the pad.
-
+**/
   app.post('/leave_pad', function(request, response) {
       sess=request.session;
       var chimpad_user_id = sess.user_id; // user's id
@@ -203,36 +318,38 @@ module.exports = function(app, io) {
 
         client.query(check_if_user_admin_query , function(err, result) {
           done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-          { 
+          if (err){ 
+            console.error(err); response.send("Error " + err); 
+          }else{ 
+            
             if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad
-               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
+               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id = '+ chimpad_pad_id + ';'; // delete all user's pad with this id
                client.query(check_if_user_admin_query , function(err, result) {
-               done();
-               if (err)
-                 { console.error(err); response.send("Error " + err); }
-                else
-                {// all pads from user's now deleted, now delete the pad itself
-                  delete_pad(chimpad_pad_id);              
-                }
-            }
+                 done();
+                 if (err)
+                   { console.error(err); response.send("Error " + err); }
+                  else
+                  {// all pads from user's now deleted, now delete the pad itself
+                    //delete_pad(chimpad_pad_id);              
+                  }
+                });
             }else{// user not admin, so just remove him from the pad
-               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + 'AND user_id ='+ chimpad_user_id +';'; // delete all user's pad with this id
+               remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id = '+ chimpad_pad_id + ' AND user_id ='+ chimpad_user_id +';'; // delete all user's pad with this id
+               
                client.query(check_if_user_admin_query , function(err, result) {
-               done();
-               if (err)
-                 { console.error(err); response.send("Error " + err); }
-                else
-                {// all pads from user's now deleted, now delete the pad itself
-                  response.send("Success");
-                }
+                done();
+                 if (err)
+                   { console.error(err); response.send("Error " + err); }
+                  else
+                  {// all pads from user's now deleted, now delete the pad itself
+                    response.send("Success");
+                  }
                 });
        
-            });
-          });
+            }
+          }
         });
+
       });
   });
 
@@ -244,14 +361,16 @@ module.exports = function(app, io) {
  
  If user is not an admin then he does not have the permission to delete the 
  pad and thus -> return false
+**/
 
-  app.post('/delete_pad', function(request, response) {
+/*
+   app.post('/delete_pad', function(request, response) {
         sess=request.session;
         var chimpad_user_id = sess.user_id; // user's id
         var chimpad_pad_id = request.body.pad_id; // pad's id
 
         pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + 'AND pad_id =' + chimpad_pad_id + ';';
+        check_if_user_admin_query = 'SELECT admin FROM user_pad WHERE user_id = ' + chimpad_user_id + ' AND pad_id =' + chimpad_pad_id + ';';
            client.query(check_if_user_admin_query , function(err, result) {
             done();
             if (err)
@@ -259,7 +378,7 @@ module.exports = function(app, io) {
             else
             { 
               if(result.row[0].admin == 1){//user is admin, so remove all the users from this pad and delete pad -> return true
-                 remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id ='+ chimpad_pad_id + ';'; // delete all user's pad with this id
+                 remove_users_from_this_pad = 'DELETE FROM user_pad WHERE pad_id = '+ chimpad_pad_id + ';'; // delete all user's pad with this id
                  client.query(check_if_user_admin_query , function(err, result) {
                  done();
                  if (err)
@@ -269,17 +388,18 @@ module.exports = function(app, io) {
                     delete_pad(chimpad_pad_id);  
                     return true;            
                   }
-              }
+              });
               }else{// user not admin, so just return false
                  return false;
          
               });
-            });
+            }
           });
         });
     });
+
+*/
     
- **/ 
 //gets all users
   app.post('/get_all_users', function(request, response) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -318,31 +438,55 @@ module.exports = function(app, io) {
   });
 
   app.get('/create', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('create');
   });
 
   app.get('/find', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('find');
   });
 
   app.get('/about', function(request, response) {
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('about');
   });
 
   app.get('/index', function(request, response) {
+    request.session.destroy();
     response.render('index');
   });
 
   app.get('/home/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('home');
   });
 
   app.get('/home', function(request,response){
     sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.redirect('/home/'+sess.user_id);
   });
 
   app.get('/pad/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
     response.render('pad');
   });
 
