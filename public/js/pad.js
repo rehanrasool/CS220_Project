@@ -42,7 +42,7 @@ $(function(){
         socket.emit('send_message', { message: text });
     }); 
      //Added functions
-    socket.on('text_for_messenger',function(data){
+    socket.on('text',function(data){
       console.log(data);
       if(data.message){
         $('#pad_messages').val(data.message);
@@ -56,7 +56,7 @@ $(function(){
     //   socket.emit('messenger_send',{message:text});
     // });
     //Adding send message functionality to it 
-    $('#send_message_messenger').click(function(){
+    $('#send_message_messneger').click(function(){
       var text=$('#pad_input_message').val();
       socket.emit('messenger_send',{message: text});
     });
