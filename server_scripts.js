@@ -320,7 +320,7 @@ module.exports = function(app, io) {
   app.post('/send_message', function(request, response) {
     sess=request.session;
     var chimpad_pad_id = request.body.pad_id;
-    var chimpad_message_content = request.body.message_text;
+    var chimpad_message_content = request.body.message_content;
     var chimpad_pad_user = sess.user_id;
     var chimpad_pad_username = sess.user_name;
 
