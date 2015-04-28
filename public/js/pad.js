@@ -80,7 +80,7 @@ $(function(){
           } }).done(function(raw_data) {
             
               var data = raw_data[0];
-              location.reload();
+              //location.reload();
           });
 
     }); 
