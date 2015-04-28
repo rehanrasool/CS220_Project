@@ -46,7 +46,7 @@ $(function(){
       var messenger= $('#pad_messages');
       if(data.message)
       {
-      messages.push({message:data.message, user:data.user_id, username:data.username});
+      messages.push({message:data.message, user:data.user_id, username:data.user_name});
       var html='';
       for(var i=0;i<messages.length;i++)
       {
