@@ -56,7 +56,7 @@ $(function(){
       var text=$('#pad_input_message').val();
       $.ajax
       ({
-        $('#padd_messages').val(text);
+        $('#pad_messages').val(text);
       });
     });
 
