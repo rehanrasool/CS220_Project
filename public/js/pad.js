@@ -33,8 +33,9 @@ $(function(){
     } }).done(function(raw_data) {
       
         var data = raw_data;
-
+        var html = '';
         var messenger= $('#pad_messages');
+        
         for(var i=0;i<data.length;i++) {
           html+=data[i].user_name+": "+data[i].message_text+"\n";
         }
