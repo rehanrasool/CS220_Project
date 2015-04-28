@@ -62,18 +62,20 @@ $(function(){
        var text = $('#pad_content').val();
         socket.emit('pad_content_send', { message: text });
     }); 
+     
      //Added functions
     socket.on('messenger_sent',function (data){
       var messenger= $('#pad_messages');
       if(data.message)
       {
-      messages.push({message:data.message, user:data.user_id, username:data.user_name});
-      var html='';
-      for(var i=0;i<messages.length;i++)
-      {
-        html+=messages[i].username+": "+messages[i].message+"\n";
-      }
-      messenger.val(messenger.val() + "\n" + html);
+/*      messages.push({message:data.message, user:data.user_id, username:data.user_name});
+        var html='';
+        for(var i=0;i<messages.length;i++)
+        {
+          html+=messages[i].username+": "+messages[i].message+"\n";
+        }*/
+        var html=data.user_name+": "+data.message+"\n";
+        messenger.val(messenger.val() + html);
       }
       else
       {
