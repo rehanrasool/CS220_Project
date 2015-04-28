@@ -3,7 +3,7 @@ $(function(){
   var socket = io();
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
-
+  var messages=[];
 	$.ajax
   	({
       type: "POST",
@@ -22,11 +22,32 @@ $(function(){
 
   	});
 
+    $.ajax
+    ({
+      type: "POST",
+      //the url where you want to sent the userName and password to
+      url: "/get_messages",
+      //json object to sent to the authentication url
+      data : {
+      pad_id : chimpad_pad_id
+    } }).done(function(raw_data) {
+      
+        var data = raw_data;
+        var html = '';
+        var messenger= $('#pad_messages');
+
+        for(var i=0;i<data.length;i++) {
+          html+=data[i].user_name+": "+data[i].message_text+"\n";
+        }
+        messenger.val(html);
+        //location.reload();
+    });
+
   socket.on('connect', function(){
     socket.emit('load', chimpad_pad_id);
   });
 
-    socket.on('message', function (data) {
+    socket.on('pad_content_sent', function (data) {
       console.log(data);
         //var messages = [];
         if(data.message) {
@@ -39,8 +60,51 @@ $(function(){
  
     $("#pad_content").bind('keyup', function(){
        var text = $('#pad_content').val();
-        socket.emit('send_message', { message: text });
+        socket.emit('pad_content_send', { message: text });
     }); 
+     
+     //Added functions
+    socket.on('messenger_sent',function (data){
+      var messenger= $('#pad_messages');
+      if(data.message)
+      {
+/*      messages.push({message:data.message, user:data.user_id, username:data.user_name});
+        var html='';
+        for(var i=0;i<messages.length;i++)
+        {
+          html+=messages[i].username+": "+messages[i].message+"\n";
+        }*/
+        var html=data.user_name+": "+data.message+"\n";
+        messenger.val(messenger.val() + html);
+      }
+      else
+      {
+        console.log(data);
+      }
+    });
+
+    //Adding send message functionality to it 
+    $('#send_message_button').click(function(){
+      var message_text=$('#pad_input_message').val();
+      $('#pad_input_message').val('');
+      socket.emit('messenger_send',{message:message_text});
+
+      $.ajax
+        ({
+          type: "POST",
+          //the url where you want to sent the userName and password to
+          url: "/send_message",
+          //json object to sent to the authentication url
+          data : {
+          pad_id : chimpad_pad_id,
+          message_content : message_text
+        } }).done(function(raw_data) {
+          
+            var data = raw_data[0];
+            //location.reload();
+        });
+
+    });
 
     $("#save_content_button").click(function(){
        var chimpad_pad_content = $('#pad_content').val();
@@ -56,7 +120,7 @@ $(function(){
           } }).done(function(raw_data) {
             
               var data = raw_data[0];
-              location.reload();
+              //location.reload();
           });
 
     }); 
