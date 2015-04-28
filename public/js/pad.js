@@ -53,9 +53,8 @@ $(function(){
     });
     //Adding send message functionality to it 
     $('#send_message_button').click(function(){
-      var text=$('#pad_input_message').val();
-      text+=$('#pad_messages').val();
-      socket.emit('messenger_send',{message:text});
+      var t=$('#pad_input_message').val();
+      socket.emit('messenger_send',{message:t});
     });
 
     $("#save_content_button").click(function(){
