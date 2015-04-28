@@ -38,7 +38,7 @@ $(function(){
 
 
         for(var i=0;i<data.length;i++) {
-          html+='<div class=\"col-lg-4\"><strong>' + data[i].user_name + '</strong></div><div class=\"col-lg-6 col-lg-offset-2 help-block\">' + moment(new Date(data[i].time_stamp)).fromNow() + '</div><div class=\"col-lg-12\">' + data[i].message_text + '</div>';
+          html+='<div class=\"col-lg-4\"><strong>' + data[i].user_name + '</strong></div><div class=\"col-lg-6 help-block\">' + moment(new Date(data[i].time_stamp)).fromNow() + '</div><div class=\"col-lg-12\">' + data[i].message_text + '</div>';
           //data[i].user_name+": "+data[i].message_text+"\n";
         }
         messenger.html(html);
