@@ -43,7 +43,7 @@ $(function(){
     }); 
      //Added functions
     socket.on('text',function (data){
-      var messenger=document.getElementById('pad_messages');
+      var messenger= $('#pad_messages');
       if(data.message)
       {
       messages.push(data.message);
@@ -52,7 +52,7 @@ $(function(){
       {
         html+=messages[i]+"</br>";
       }
-      messenger.innerHTML=html;
+      messenger.val(html);
     }
     else
     {
