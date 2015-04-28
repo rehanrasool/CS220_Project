@@ -1,5 +1,5 @@
 $(function(){
-	var chimpad_user_id=Number((window.location.pathname.match(/\/home\/(\d+)$/)[1]);
+	var chimpad_user_id=Number((window.location.pathname.match(/\/user\/(\d+)$/)[1]);
 
 	$.ajax
 	({
