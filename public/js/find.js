@@ -8,7 +8,7 @@ $(function(){
       //json object to sent to the authentication url
       data : {
     } }).done(function(raw_data) {
-      @2@
+      
       var tbody = $('#all_pads_table tbody'),
     	props = ["id", "title", "last_modified_timestamp", "last_modified_user"];
 		$.each(raw_data, function(i, pad) {
