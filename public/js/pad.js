@@ -50,7 +50,7 @@ $(function(){
       var html=' ';
       for(var i=0;i<messages.length;i++)
       {
-        html+=messages[i]+"</br>";
+        html+=messages[i]+"\n";
       }
       messenger.val(html);
     }
@@ -62,6 +62,7 @@ $(function(){
     //Adding send message functionality to it 
     $('#send_message_button').click(function(){
       var text=$('#pad_input_message').val();
+      $('pad_input_message').val('');
       socket.emit('messenger_send',{message:text});
     });
 
