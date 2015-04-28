@@ -42,10 +42,10 @@ $(function(){
         socket.emit('send_message', { message: text });
     }); 
      //Added functions
-    socket.on('text',function(data){
+    socket.on('text',function (data){
       console.log(data);
-      if(data.text){
-        $('#pad_messages').val(data.text);
+      if(data.message){
+        $('#pad_messages').val(data.message);
       }
       else {
         console.log("There is a problem:",data);
@@ -53,8 +53,8 @@ $(function(){
     });
     //Adding send message functionality to it 
     $('#send_message_button').click(function(){
-      var t=$('#pad_input_message').val();
-      socket.emit('messenger_send',{text:t});
+      var text=$('#pad_input_message').val();
+      socket.emit('messenger_send',{message:text});
     });
 
     $("#save_content_button").click(function(){
