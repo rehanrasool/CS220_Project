@@ -1,13 +1,26 @@
 var pg = require('pg');
 var express = require('express');
-var session = require('express-session');
+//var session = require('express-session');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser')();
+var session = require('cookie-session')({secret: 'ssshhhhh'});
 
 
 module.exports = function(app, io) {
 
-  var sess;
-  app.use(session({secret: 'ssshhhhh'}));
+  //var sess;
+
+  app.use(cookieParser);
+  app.use(session);
+  //app.use(session);
+  io.use(function(socket, next) {
+    var req = socket.handshake;
+    var res = {};
+    cookieParser(req, res, function(err) {
+        if (err) return next(err);
+        session(req, res, next);
+    });
+  });
 
   app.use(express.static(__dirname + '/public'));
     // parse application/json
@@ -52,6 +65,7 @@ module.exports = function(app, io) {
 
             sess=request.session;
             sess.user_id=id;
+            sess.user_name=username;
             //global.user_id = id;
 
             response.redirect('/home/'+id);
@@ -284,14 +298,54 @@ module.exports = function(app, io) {
     });
   });
 
+  app.post('/get_messages', function(request, response) {
+      var chimpad_pad_id = request.body.pad_id;
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_messages_query = 'SELECT pad_id,user_id,user_name,content as message_text,date_part(\'epoch\',time_stamp)*1000 as time_stamp FROM messages WHERE pad_id = ' + chimpad_pad_id + ' ORDER BY time_stamp;';
+
+        client.query(get_messages_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
+  //save content on pressing the save button
+  app.post('/send_message', function(request, response) {
+    sess=request.session;
+    var chimpad_pad_id = request.body.pad_id;
+    var chimpad_message_content = request.body.message_content;
+    var chimpad_pad_user = sess.user_id;
+    var chimpad_pad_username = sess.user_name;
+
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      insert_message_query = 'INSERT INTO messages(pad_id,user_id,user_name,content,time_stamp) VALUES (' + chimpad_pad_id + ',' + chimpad_pad_user + ',\'' + chimpad_pad_username + '\',\'' + chimpad_message_content + '\', NOW() );';
+
+      client.query(insert_message_query , function(err, result) {
+        done();
+        if (err)
+         { console.error(err); response.send("Error " + err); }
+        else
+         { 
+          response.send(result.rows);
+         }
+      });
+    });
+  });
 
   app.post('/get_pad', function(request, response) {
       var chimpad_pad_id = request.body.pad_id;
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        authenticate_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
+        get_pad_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad WHERE id = ' + chimpad_pad_id + ';';
 
-        client.query(authenticate_query , function(err, result) {
+        client.query(get_pad_query , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
@@ -491,18 +545,24 @@ module.exports = function(app, io) {
   });
 
   io.on('connection', function (socket) {
+      console.log("Session: ", socket.handshake.session);
+      
       socket.on('load',function(data){ 
         socket.room = data;
         socket.join(data);
       });
-      socket.on('send_message', function (data) {
-          socket.broadcast.to(socket.room).emit('message', data);
+      
+      socket.on('pad_content_send', function (data) {
+          socket.broadcast.to(socket.room).emit('pad_content_sent', data);
       });
+      
       socket.on('messenger_send',function (data){
-        io.sockets.in(socket.room).emit('text',data);
+        data.user_id = socket.handshake.session.user_id;
+        data.user_name = socket.handshake.session.user_name;
+        io.sockets.in(socket.room).emit('messenger_sent',data);
+
       });
   });
-
 
 
 };
