@@ -355,7 +355,7 @@ module.exports = function(app, io) {
           socket.broadcast.to(socket.room).emit('message', data);
       });
       socket.on('messenger_send',function (data){
-        socket.broadcast.to(socket.room).emit('text',data);
+        socket.emit('text',data);
       });
   });
 
