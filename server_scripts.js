@@ -65,6 +65,7 @@ module.exports = function(app, io) {
 
             sess=request.session;
             sess.user_id=id;
+            sess.user_name=username;
             //global.user_id = id;
 
             response.redirect('/home/'+id);
@@ -505,15 +506,20 @@ module.exports = function(app, io) {
 
   io.on('connection', function (socket) {
       console.log("Session: ", socket.handshake.session);
+      
       socket.on('load',function(data){ 
         socket.room = data;
         socket.join(data);
       });
-      socket.on('send_message', function (data) {
-          socket.broadcast.to(socket.room).emit('message', data);
+      
+      socket.on('pad_content_send', function (data) {
+          socket.broadcast.to(socket.room).emit('pad_content_sent', data);
       });
+      
       socket.on('messenger_send',function (data){
-        io.sockets.in(socket.room).emit('text',data);
+        data.user_id = socket.handshake.session.user_id;
+        data.user_name = socket.handshake.session.user_name;
+        io.sockets.in(socket.room).emit('messenger_sent',data);
 
       });
   });
