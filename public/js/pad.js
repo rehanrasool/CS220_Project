@@ -3,7 +3,7 @@ $(function(){
   var socket = io();
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
-
+  var messages=[];
 	$.ajax
   	({
       type: "POST",
@@ -43,13 +43,21 @@ $(function(){
     }); 
      //Added functions
     socket.on('text',function (data){
+      var messenger=document.getElementById('pad_messages');
+      if(data.message)
+      {
+      messages.push(data.message);
+      var html=' ';
+      for(var i=0;i<messages.length;i++)
+      {
+        html+=messsages[i]+"</br>";
+      }
+      messenger.innerHTML=html;
+    }
+    else
+    {
       console.log(data);
-      if(data.message){
-        $('#pad_messages').val(data.message);
-      }
-      else {
-        console.log("There is a problem:",data);
-      }
+    }
     });
     //Adding send message functionality to it 
     $('#send_message_button').click(function(){
