@@ -516,7 +516,8 @@ module.exports = function(app, io) {
   });
 
   app.get('/index', function(request, response) {
-    request.session.destroy();
+    sess=request.session;
+    sess.user_id = null;
     response.render('index');
   });
 
