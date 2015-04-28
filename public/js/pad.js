@@ -50,7 +50,7 @@ $(function(){
       var html='';
       for(var i=0;i<messages.length;i++)
       {
-        html+=messages[i].username+": "+messages[i].message "\n";
+        html+=messages[i].username+": "+messages[i].message+"\n";
       }
       messenger.val(html);
     }
