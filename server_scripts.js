@@ -302,7 +302,7 @@ module.exports = function(app, io) {
       var chimpad_pad_id = request.body.pad_id;
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_messages_query = 'SELECT pad_id,user_id,user_name,content as message_text,date_part(\'epoch\',time_stamp)*1000 as time_stamp FROM messages WHERE pad_id = ' + chimpad_pad_id + ' ORDER BY time_stamp DESC;';
+        get_messages_query = 'SELECT pad_id,user_id,user_name,content as message_text,date_part(\'epoch\',time_stamp)*1000 as time_stamp FROM messages WHERE pad_id = ' + chimpad_pad_id + ' ORDER BY time_stamp;';
 
         client.query(get_messages_query , function(err, result) {
           done();

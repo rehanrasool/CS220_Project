@@ -35,7 +35,7 @@ $(function(){
         var data = raw_data;
         var html = '';
         var messenger= $('#pad_messages');
-        
+
         for(var i=0;i<data.length;i++) {
           html+=data[i].user_name+": "+data[i].message_text+"\n";
         }
@@ -73,7 +73,7 @@ $(function(){
       {
         html+=messages[i].username+": "+messages[i].message+"\n";
       }
-      messenger.val(html);
+      messenger.val(messenger.val() + "\n" + html);
       }
       else
       {
