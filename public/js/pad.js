@@ -41,6 +41,20 @@ $(function(){
        var text = $('#pad_content').val();
         socket.emit('send_message', { message: text });
     }); 
+     //Added functions
+    socket.on('text',function(data){
+      console.log(data);
+      if(data.message){
+        $('#pad_messages').val(data.message);
+      }
+      else {
+        console.log("There is a problem:",data);
+      }
+    });
+    $('#pad_messages').bind('keyup',function(){
+      var text=$('#pad_messages').val();
+      socket.emit('messenger_send',{message:text});
+    });
 
     $("#save_content_button").click(function(){
        var chimpad_pad_content = $('#pad_content').val();
