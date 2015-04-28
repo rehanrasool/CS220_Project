@@ -563,6 +563,14 @@ module.exports = function(app, io) {
     response.render('pad');
   });
 
+  app.get('/user/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
+    response.render('user');
+  });
+
   io.on('connection', function (socket) {
       console.log("Session: ", socket.handshake.session);
       
