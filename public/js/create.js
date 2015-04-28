@@ -8,8 +8,12 @@ $(function(){
 		if(collaborator_name != ""){
 			collaborator_array.push(collaborator_name);
 			var current_names = $('#collaborators_name').html();
-			$('#collaborators_name').html(current_names + "," + collaborator_name);
-			$('#inputCollaborators').val(""); //empty the field
+			if($('#collaborators_name').val() == ""){
+				$('#collaborators_name').html(collaborator_name + " , ")
+			}else{
+				$('#collaborators_name').html(current_names + " , " + collaborator_name);
+			}		
+			$('#collaborator_search').val(""); //empty the field
 		}
 	});
 
