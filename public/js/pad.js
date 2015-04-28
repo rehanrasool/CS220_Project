@@ -46,11 +46,11 @@ $(function(){
       var messenger= $('#pad_messages');
       if(data.message)
       {
-      messages.push(data.message);
-      var html=' ';
+      messages.push({message:data.message, user:data.user_id, username:data.username});
+      var html='';
       for(var i=0;i<messages.length;i++)
       {
-        html+=messages[i]+"\n";
+        html+=messages[i].username+": "+messages[i].message "\n";
       }
       messenger.val(html);
     }
