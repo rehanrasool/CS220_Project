@@ -140,11 +140,7 @@ module.exports = function(app, io) {
 
   app.post('/get_all_pads', function(request, response) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_pads_data = 'SELECT p.id , p , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p 
-          INNER JOIN user_table u ON (u.id = p.last_modified_user) ORDER BY p.last_modified_timestamp DESC;';
-
-/*        'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad ORDER BY last_modified_timestamp DESC;';
-*/
+        get_all_pads_data = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad ORDER BY last_modified_timestamp DESC;';
 
         client.query(get_all_pads_data , function(err, result) {
           done();
