@@ -26,33 +26,20 @@ $(function(){
     socket.emit('load', chimpad_pad_id);
   });
 
-    socket.on('content', function (data) {
+    socket.on('message', function (data) {
       console.log(data);
         //var messages = [];
-        if(data.content) {
-            $('#pad_content').val(data.content);
+        if(data.message) {
+            $('#pad_content').val(data.message);
 
         } else {
             console.log("There is a problem:", data);
         }
     });
-    socket.on('message',function(data){
-      console.log(data);
-      if(data.content) {
-        $('#pad_messages').val(data.content);
-      } else
-      {
-        console.log("There is a problem:",data);
-      }
-    });
-    $('#pad_messages').bind('keyup',function(){
-      var text=$('#pad_messages').val();
-      socket.emit('send_message')
-    });
  
     $("#pad_content").bind('keyup', function(){
        var text = $('#pad_content').val();
-        socket.emit('pad_message', { content: text });
+        socket.emit('send_message', { message: text });
     }); 
 
     $("#save_content_button").click(function(){
