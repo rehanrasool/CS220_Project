@@ -3,14 +3,15 @@ var express = require('express');
 //var session = require('express-session');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')();
-var session = require('cookie-session')();
+var session = require('cookie-session')({secret: 'ssshhhhh'});
 
 
 module.exports = function(app, io) {
 
   //var sess;
-  app.use(session({secret: 'ssshhhhh'}));
+
   app.use(cookieParser);
+  app.use(session);
   //app.use(session);
   io.use(function(socket, next) {
     var req = socket.handshake;
