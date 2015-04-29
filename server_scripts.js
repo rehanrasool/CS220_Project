@@ -156,6 +156,25 @@ module.exports = function(app, io) {
         });
       });
   });
+  //adding function to get data from user table 
+  app.post('/get_user_profile',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = "+id+ " ;";
+      client.query(get_all_user_profile_data,function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
 
   app.post('/search_collaborator', function(request, response) {
     var potential_name = request.body.chimpad_list_text;
@@ -546,6 +565,14 @@ module.exports = function(app, io) {
       response.redirect('index');
     }
     response.render('pad');
+  });
+
+  app.get('/user/:id', function(request,response){
+    sess=request.session;
+    if (isNaN(sess.user_id)){
+      response.redirect('index');
+    }
+    response.render('user');
   });
 
   io.on('connection', function (socket) {
