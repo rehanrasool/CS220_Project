@@ -40,3 +40,8 @@ textarea {
   background-color: white;
   overflow-y: scroll;
 }
+
+code {
+  height: 300px;
+  overflow-y: scroll;
+}
