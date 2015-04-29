@@ -10,7 +10,7 @@ $(function(){
     } }).done(function(raw_data) {
       
       var tbody = $('#all_pads_table tbody'),
-    	props = ["id", "title", "last_modified_timestamp", "last_modified_user"];
+    	props = ["id", "title", "last_modified_timestamp","username"];
 		$.each(raw_data, function(i, pad) {
 		  var tr = $('<tr>');
       
@@ -19,7 +19,9 @@ $(function(){
               $('<td>').html(moment(new Date(pad[prop])).fromNow()).appendTo(tr);
             } else if (prop == 'title') {
               $('<td>').html('<a href="..\\pad\\' + pad['id'] + '">' + pad[prop] + '</a>').appendTo(tr);  
-            } else {
+            }else if(prop == 'username'){
+              $('<td>').html('<a href="..\\user\\' + pad['last_modified_user'] + '">' + pad[prop] + '</a>').appendTo(tr);
+            }else {
               $('<td>').html(pad[prop]).appendTo(tr);  
             }
         });
