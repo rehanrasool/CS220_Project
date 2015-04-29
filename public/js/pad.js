@@ -59,7 +59,7 @@ $(function(){
       console.log(data);
         //var messages = [];
         if(data.message) {
-            $('#pad_content').val(data.message);
+            $('#pad_content').html(data.message);
 
         } else {
             console.log("There is a problem:", data);
@@ -67,7 +67,7 @@ $(function(){
     });
  
     $("#pad_content").bind('keyup', function(){
-       var text = $('#pad_content').val();
+       var text = $('#pad_content').html();
         socket.emit('pad_content_send', { message: text });
     }); 
      
@@ -121,7 +121,7 @@ $(function(){
     });
 
     $("#save_content_button").click(function(){
-       var chimpad_pad_content = $('#pad_content').val();
+       var chimpad_pad_content = $('#pad_content').html();
         $.ajax
           ({
             type: "POST",
@@ -134,13 +134,14 @@ $(function(){
           } }).done(function(raw_data) {
             
               var data = raw_data[0];
+              $('pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+              });
               //location.reload();
           });
 
     }); 
 
-    $('pre code').each(function(i, block) {
-      hljs.highlightBlock(block);
-    });
+    
 
 });
