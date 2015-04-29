@@ -1,5 +1,6 @@
 var pg = require('pg');
 var express = require('express');
+var pg_escape = require('pg-escape');
 //var session = require('express-session');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')();
@@ -12,6 +13,7 @@ module.exports = function(app, io) {
 
   app.use(cookieParser);
   app.use(session);
+  app.use(pg_escape);
   //app.use(session);
   io.use(function(socket, next) {
     var req = socket.handshake;
