@@ -20,6 +20,10 @@ $(function(){
         $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
+        $('pre code').each(function(i, block) {
+          hljs.highlightBlock(block);
+        });
+
   	});
 
 
@@ -140,9 +144,7 @@ $(function(){
 
     }); 
 
-    $('pre code').each(function(i, block) {
-        hljs.highlightBlock(block);
-    });
+    
 
     
 
