@@ -310,7 +310,7 @@ module.exports = function(app, io) {
 
       //save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  $1 ,last_modified_user = $2 WHERE id = $3;', chimpad_pad_content, chimpad_pad_user, chimpad_pad_id;
 
-      client.query('UPDATE pad SET last_modified_timestamp = NOW() ,content = $1 ,last_modified_user = $2 WHERE id = $3;', chimpad_pad_content, chimpad_pad_user, chimpad_pad_id , function(err, result) {
+      client.query('UPDATE pad SET last_modified_timestamp = NOW() ,content = $1 ,last_modified_user = $2 WHERE id = $3;', [chimpad_pad_content, chimpad_pad_user, chimpad_pad_id ], function(err, result) {
         done();
         if (err)
          { console.error(err); response.send("Error " + err); }
