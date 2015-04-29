@@ -22,7 +22,9 @@ $(function(){
               $('<td>').html(moment(new Date(pad[prop])).fromNow()).appendTo(tr);
             } else if (prop == 'title') {
               $('<td>').html('<a href="..\\pad\\' + pad['id'] + '">' + pad[prop] + '</a>').appendTo(tr);  
-            } else {
+            } else if(prop =='username'){
+              $('<td>').html('<a href="..\\pad\\' + pad['last_modified_user'] + '">' + pad[prop] + '</a>').appendTo(tr);  
+            }else{
               $('<td>').html(pad[prop]).appendTo(tr);  
             }
     		  });
