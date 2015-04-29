@@ -13,6 +13,8 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -81,7 +83,9 @@
                         <fieldset>
                           <div class="form-group">
                             <div class="col-lg-12">
-                              <textarea class="form-control" rows="16" id="pad_content"></textarea>
+                              <pre><code class="html" id="pad_content">
+                                <!-- <textarea class="form-control" rows="16" id="pad_content"></textarea> -->
+                                </code></pre>
                             </div>
                             <div class="col-lg-6">
                               <span id="pad_content_last_modified_timestamp" class="help-block">last modified:</span>
@@ -133,10 +137,12 @@
 
     <!-- jQuery Version 1.11.1 -->
     <script src="../js/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/moment.js"></script>
     <script src="../js/chimpad.js"></script>
     <script src="../js/pad.js"></script>
+
 
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
