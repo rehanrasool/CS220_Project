@@ -1,6 +1,5 @@
 var pg = require('pg');
 var express = require('express');
-var pg_escape = require('pg-escape');
 //var session = require('express-session');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')();
@@ -13,7 +12,6 @@ module.exports = function(app, io) {
 
   app.use(cookieParser);
   app.use(session);
-  app.use(pg_escape);
   //app.use(session);
   io.use(function(socket, next) {
     var req = socket.handshake;
@@ -308,9 +306,11 @@ module.exports = function(app, io) {
     var chimpad_pad_user = sess.user_id;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  \'' + pg_escape.string(chimpad_pad_content) + '\' ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
+      //save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  \'' + chimpad_pad_content + '\' ,last_modified_user = '+ chimpad_pad_user + ' WHERE id = ' + chimpad_pad_id + ';';
 
-      client.query(save_or_update_pad_query , function(err, result) {
+      //save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  $1 ,last_modified_user = $2 WHERE id = $3;', chimpad_pad_content, chimpad_pad_user, chimpad_pad_id;
+
+      client.query('UPDATE pad SET last_modified_timestamp = NOW() ,content = $1 ,last_modified_user = $2 WHERE id = $3;', chimpad_pad_content, chimpad_pad_user, chimpad_pad_id , function(err, result) {
         done();
         if (err)
          { console.error(err); response.send("Error " + err); }
