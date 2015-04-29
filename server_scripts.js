@@ -120,7 +120,7 @@ module.exports = function(app, io) {
               user_pad_ids = user_pad_ids + "," + result.rows[row]['pad_id'];
             }
 
-            get_user_pads_data = 'SELECT p.id, p.title, p.content, p.date_part(\'epoch\', p.last_modified_timestamp)*1000 as last_modified_timestamp, p.last_modified_user FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) Where id IN ('+ user_pad_ids +') ORDER BY p.last_modified_timestamp DESC;';
+            get_user_pads_data = 'SELECT  p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) Where id IN ('+ user_pad_ids +') ORDER BY p.last_modified_timestamp DESC;';
 
               client.query(get_user_pads_data , function(err, result) {
                 done();
