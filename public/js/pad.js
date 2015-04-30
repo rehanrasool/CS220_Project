@@ -42,9 +42,9 @@ $(function(){
 
         $("#pad_language_options").val(data['lang']);
 
-        $('pre code').each(function(i, block) {
+/*        $('pre code').each(function(i, block) {
           hljs.highlightBlock(block);
-        });
+        });*/
 
     });
 
