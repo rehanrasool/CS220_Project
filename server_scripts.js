@@ -344,7 +344,7 @@ module.exports = function(app, io) {
   app.post('/get_languages', function(request, response) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_languages_query = 'SELECT * FROM langs;';
+        get_languages_query = 'SELECT * FROM langs ORDER BY name;';
 
         client.query(get_languages_query , function(err, result) {
           done();
