@@ -45,10 +45,3 @@ code {
   height: 300px;
   overflow-y: scroll;
 }
-
-.nohighlight{
-	color: black !important;
-	background-color: white !important;
-	height: 300px !important;
-  	overflow-y: scroll !important;
-}
