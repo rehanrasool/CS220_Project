@@ -26,6 +26,25 @@ $(function(){
 
   	});
 
+    $.ajax
+      ({
+        type: "POST",
+        //the url where you want to sent the userName and password to
+        url: "/get_languages",
+        //json object to sent to the authentication url
+        data : {
+        pad_id : chimpad_pad_id
+      } }).done(function(raw_data) {
+        
+          var data = raw_data;
+
+          $.each( data, function( key, value ) {
+            alert( key + ": " + value );
+            //$('#pad_language_options').append($("<option></option>").attr("value",key).text(value));
+          });
+
+      });
+
 
     function get_messages () {
       $.ajax

@@ -340,6 +340,23 @@ module.exports = function(app, io) {
       });
   });
 
+  app.post('/get_languages', function(request, response) {
+
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_languages_query = 'SELECT * FROM langs;';
+
+        client.query(get_languages_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
   //save content on pressing the save button
   app.post('/send_message', function(request, response) {
     sess=request.session;
