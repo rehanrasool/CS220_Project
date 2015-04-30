@@ -159,7 +159,7 @@ $(function(){
             data : {
             pad_id : chimpad_pad_id,
             pad_content : chimpad_pad_content,
-            pad_language : chimpad_pad_content
+            pad_language : chimpad_pad_language
           } }).done(function(raw_data) {
             
               var data = raw_data[0];
