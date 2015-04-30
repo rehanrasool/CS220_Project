@@ -48,6 +48,13 @@ $(function(){
 
     });
 
+    $( "#pad_language_options" ).change(function() {
+      $('#pad_content').attr('class', $( "#pad_language_options" ).val());
+
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });
 
     function get_messages () {
       $.ajax
@@ -146,10 +153,12 @@ $(function(){
 
     });
 
+
+
     $("#save_content_button").click(function(){
        var chimpad_pad_content = $('#pad_content').html();
        var chimpad_pad_language = $("#pad_language_options").val();
-       
+
         $.ajax
           ({
             type: "POST",
