@@ -4,27 +4,6 @@ $(function(){
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
   var messages=[];
-	$.ajax
-  	({
-      type: "POST",
-      //the url where you want to sent the userName and password to
-      url: "/get_pad",
-      //json object to sent to the authentication url
-      data : {
-      pad_id : chimpad_pad_id
-    } }).done(function(raw_data) {
-      
-      	var data = raw_data[0];
-        $('#pad_title').html(data['title']);
-        $('#pad_content').html(data['content']);
-        $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
-        $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
-
-        $('pre code').each(function(i, block) {
-          hljs.highlightBlock(block);
-        });
-
-  	});
 
     $.ajax
       ({
@@ -39,11 +18,35 @@ $(function(){
           var data = raw_data;
 
           $.each( data, function( key, value ) {
-            alert( key + ": " + value );
-            //$('#pad_language_options').append($("<option></option>").attr("value",key).text(value));
+            //alert( key + ": " + value );
+            $('#pad_language_options').append($("<option></option>").attr("value",value['value']).text(value['name']));
           });
 
       });
+
+    $.ajax
+    ({
+      type: "POST",
+      //the url where you want to sent the userName and password to
+      url: "/get_pad",
+      //json object to sent to the authentication url
+      data : {
+      pad_id : chimpad_pad_id
+    } }).done(function(raw_data) {
+      
+        var data = raw_data[0];
+        $('#pad_title').html(data['title']);
+        $('#pad_content').html(data['content']);
+        $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
+        $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
+
+        $("#pad_language_options").val(data['lang']);
+
+        $('pre code').each(function(i, block) {
+          hljs.highlightBlock(block);
+        });
+
+    });
 
 
     function get_messages () {
@@ -145,6 +148,8 @@ $(function(){
 
     $("#save_content_button").click(function(){
        var chimpad_pad_content = $('#pad_content').html();
+       var chimpad_pad_language = $("#pad_language_options").val();
+       
         $.ajax
           ({
             type: "POST",
@@ -153,7 +158,8 @@ $(function(){
             //json object to sent to the authentication url
             data : {
             pad_id : chimpad_pad_id,
-            pad_content : chimpad_pad_content
+            pad_content : chimpad_pad_content,
+            pad_language : chimpad_pad_content
           } }).done(function(raw_data) {
             
               var data = raw_data[0];

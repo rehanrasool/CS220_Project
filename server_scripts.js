@@ -303,6 +303,7 @@ module.exports = function(app, io) {
     sess=request.session;
     var chimpad_pad_id = request.body.pad_id;
     var chimpad_pad_content = request.body.pad_content;
+    var chimpad_pad_language = request.body.pad_language;
     var chimpad_pad_user = sess.user_id;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -310,7 +311,7 @@ module.exports = function(app, io) {
 
       //save_or_update_pad_query = 'UPDATE pad SET last_modified_timestamp = NOW() ,content =  $1 ,last_modified_user = $2 WHERE id = $3;', chimpad_pad_content, chimpad_pad_user, chimpad_pad_id;
 
-      client.query('UPDATE pad SET last_modified_timestamp = NOW() ,content = $1 ,last_modified_user = $2 WHERE id = $3;', [chimpad_pad_content, chimpad_pad_user, chimpad_pad_id ], function(err, result) {
+      client.query('UPDATE pad SET last_modified_timestamp = NOW() ,content = $1 ,last_modified_user = $2, lang = $3 WHERE id = $4;', [chimpad_pad_content, chimpad_pad_user, chimpad_pad_language, chimpad_pad_id ], function(err, result) {
         done();
         if (err)
          { console.error(err); response.send("Error " + err); }
