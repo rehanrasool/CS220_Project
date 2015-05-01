@@ -50,7 +50,8 @@ $(function(){
     });
 
     $( "#pad_language_options" ).change(function() {
-        editor.getSession().setMode("ace/mode/" + $("#pad_language_options").val());
+        socket.emit('change_mode', { mode: $("#pad_language_options").val() });
+        //editor.getSession().setMode("ace/mode/" + $("#pad_language_options").val());
     });
 
     function get_messages () {
@@ -107,6 +108,10 @@ $(function(){
       var html = '';
 
       get_messages();
+    });
+
+    socket.on('mode_changed',function (data){
+      editor.getSession().setMode("ace/mode/" + data.mode);
     });
 
     //Adding send message functionality to it 

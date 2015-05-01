@@ -606,6 +606,10 @@ module.exports = function(app, io) {
       socket.on('pad_content_send', function (data) {
           socket.broadcast.to(socket.room).emit('pad_content_sent', data);
       });
+
+      socket.on('change_mode', function (data) {
+          socket.broadcast.to(socket.room).emit('mode_changed', data);
+      });
       
       socket.on('messenger_send',function (data){
         data.user_id = socket.handshake.session.user_id;
