@@ -41,6 +41,9 @@ $(function(){
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
         $("#pad_language_options").val(data['lang']);
+        $('pre code').each(function(i, block) {
+          hljs.highlightBlock(block);
+        });
 
     });
 
