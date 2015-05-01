@@ -41,14 +41,19 @@ $(function(){
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
         $("#pad_language_options").val(data['lang']);
-        $('#pad_content_format').attr('class', 'language-' + $( "#pad_language_options" ).val());
+        $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
         Prism.highlightAll();
 
 
     });
 
     $( "#pad_language_options" ).change(function() {
-      $('#pad_content_format').attr('class', 'language-' + $( "#pad_language_options" ).val());
+      $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
+
+      if ($( "#pad_language_options" ).val() == 'none') {
+        $('#pad_content_format').attr('class', 'language-' + $( "#pad_language_options" ).val());
+      }
+       
 
       Prism.highlightAll();
 
