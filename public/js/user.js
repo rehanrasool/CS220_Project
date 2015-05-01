@@ -9,9 +9,10 @@ $(function(){
 			user_id:chimpad_user_id
 		}
 	}).done(function(raw_data) {
-		var props=['id','username','email'];
-		$('#user_name_head').val(props['username']);
-		$('#user_id_val').val(props['id']);
-		$('#user_email_val').val(props['email']);
+		var data = raw_data[0];
+
+		$('#user_name_head').val(data['username']);
+		$('#user_id_val').val(data['id']);
+		$('#user_email_val').val(data['email']);
 	});
 });
