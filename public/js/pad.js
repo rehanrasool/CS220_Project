@@ -103,7 +103,7 @@ $(function(){
         }
     });
  
-    editor.getSession().on('change', function(e) {
+    $("#pad_content").bind('keyup', function(){
        var text =  editor.getValue();
         socket.emit('pad_content_send', { message: text });
     }); 
