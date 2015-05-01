@@ -96,15 +96,15 @@ $(function(){
       console.log(data);
         //var messages = [];
         if(data.message) {
-            $('#pad_content').html(data.message);
+             editor.setValue(data.message);
 
         } else {
             console.log("There is a problem:", data);
         }
     });
  
-    $("#pad_content").bind('keyup', function(){
-       var text = $('#pad_content').html();
+    editor.getSession().on('change', function(e) {
+       var text =  editor.getValue();
        Prism.highlightAll();
         socket.emit('pad_content_send', { message: text });
     }); 
@@ -115,24 +115,6 @@ $(function(){
       var html = '';
 
       get_messages();
-/*
-      if(data.message)
-      {
-      messages.push({message:data.message, user:data.user_id, username:data.user_name});
-        var html='';
-        for(var i=0;i<messages.length;i++)
-        {
-          html+=messages[i].username+": "+messages[i].message+"\n";
-        }
-        html='<div class=\"col-lg-6\"><strong>' + data.user_name + '</strong></div><div class=\"col-lg-6 text-right\">' + moment(new Date(data.time_stamp)).fromNow() + '</div><div class=\"col-lg-12\">' + data.message + '</div><div class=\"col-lg-12\">&nbsp;</div>';
-        //var html=data.user_name+": "+data.message+"\n";
-        messenger.html(messenger.html() + html);
-        messenger.animate({ scrollTop: messenger[0].scrollHeight}, 1000);
-      }
-      else
-      {
-        console.log(data);
-      }*/
     });
 
     //Adding send message functionality to it 
