@@ -11,8 +11,8 @@ $(function(){
 	}).done(function(raw_data) {
 		var data = raw_data[0];
 
-		$('#user_name_head').val(data['username']);
-		$('#user_id_val').val(data['id']);
-		$('#user_email_val').val(data['email']);
+		$('#user_name_head').html(data['username']);
+		$('#user_id_val').html(data['id']);
+		$('#user_email_val').html(data['email']);
 	});
 });
