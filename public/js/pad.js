@@ -168,6 +168,10 @@ $(function(){
        var chimpad_pad_content = $('#pad_content').html();
        var chimpad_pad_language = $("#pad_language_options").val();
 
+       if (chimpad_pad_language == 'http') {
+          chimpad_pad_language = 'none';
+       }
+
         $.ajax
           ({
             type: "POST",
