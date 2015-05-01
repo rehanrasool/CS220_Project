@@ -41,26 +41,22 @@ $(function(){
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
         $("#pad_language_options").val(data['lang']);
-        if ($( "#pad_language_options" ).val() == 'none') {
+/*        if ($( "#pad_language_options" ).val() == 'none') {
           $('#pad_content').attr('class', 'language-http');
         } else {
           $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
-        }
-        Prism.highlightAll();
+        }*/
+        
+        var editor = ace.edit("pad_content");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
 
 
     });
 
     $( "#pad_language_options" ).change(function() {
-      
 
-      if ($( "#pad_language_options" ).val() == 'none') {
-        $('#pad_content').attr('class', 'language-http');
-      } else {
         $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
-      }
-
-      Prism.highlightAll();
 
     });
 
