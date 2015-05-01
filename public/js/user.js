@@ -24,7 +24,7 @@ $(function(){
 		}
 	}).done(function(raw_data) {
       
-      	var tbody = $('#user_pad_table tbody'),
+      	var tbody = $('#user_pads_table tbody'),
         	props = ["id", "title"];
     		$.each(raw_data, function(i, pad) {
     		  var tr = $('<tr>');
