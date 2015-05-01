@@ -4,6 +4,7 @@ $(function(){
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
   var messages=[];
+  var editor;
 
     $.ajax
       ({
@@ -46,8 +47,8 @@ $(function(){
         } else {
           $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
         }*/
-        
-        var editor = ace.edit("pad_content");
+
+        editor = ace.edit("pad_content");
         editor.getSession().setMode("ace/mode/javascript");
 
 
@@ -160,7 +161,7 @@ $(function(){
 
 
     $("#save_content_button").click(function(){
-       var chimpad_pad_content = $('#pad_content').html();
+       var chimpad_pad_content = editor.getValue();
        var chimpad_pad_language = $("#pad_language_options").val();
 
        if (chimpad_pad_language == 'http') {
