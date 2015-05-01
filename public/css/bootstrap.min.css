@@ -30,10 +30,6 @@ body {
 	color: black;
 }
 
-textarea {
-  resize: vertical; /* user can resize vertically, but width is fixed */
-}
-
 #pad_messages {
   height: 300px;
   width:100%;
@@ -43,6 +39,6 @@ textarea {
 
 #pad_content {
   height: 300px;
-  overflow-y: scroll;
+  resize: vertical;
   background-color: white !important;
 }
