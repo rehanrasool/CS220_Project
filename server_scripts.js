@@ -156,6 +156,28 @@ module.exports = function(app, io) {
         });
       });
   });
+
+
+
+  app.post('/get_stats', function(request, response) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        get_stats_query = 'SELECT (SELECT COUNT(id) FROM user_table) AS users_count,(SELECT COUNT(id) FROM pad WHERE type=\'public\') AS public_pads_count,(SELECT COUNT(id) FROM pad WHERE type=\'private\') AS private_pads_count';
+
+/*        'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad ORDER BY last_modified_timestamp DESC;';
+*/
+
+        client.query(get_stats_query , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            response.send(result.rows);
+           }
+        });
+      });
+  });
+
   //adding function to get data from user table 
   app.post('/get_user_profile',function(request,response){
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
