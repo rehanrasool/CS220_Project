@@ -195,6 +195,7 @@ module.exports = function(app, io) {
 
   app.post('/create_pad', function(request, response) {
     sess=request.session;
+    var chimpad_pad_type = request.body.pad_type;
     var chimpad_pad_title = request.body.pad_title;
     var chimpad_pad_user = sess.user_id;
     var collaborators_array = request.body.pad_collaborators;
@@ -202,9 +203,8 @@ module.exports = function(app, io) {
     var chimpad_pad_id = 1;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
       console.log(save_or_update_pad_query);
-      client.query(save_or_update_pad_query , function(err, result) {
+      client.query('INSERT INTO pad (title,last_modified_timestamp,last_modified_user,type) VALUES ($1,NOW(),$2,$3) RETURNING id;', [chimpad_pad_title,chimpad_pad_user,chimpad_pad_type] , function(err, result) {
         done();
         if (err)
          { console.error(err); response.send("Error " + err); }
