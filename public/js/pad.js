@@ -42,22 +42,15 @@ $(function(){
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
         $("#pad_language_options").val(data['lang']);
-/*        if ($( "#pad_language_options" ).val() == 'none') {
-          $('#pad_content').attr('class', 'language-http');
-        } else {
-          $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
-        }*/
 
         editor.setValue(data['content']);
-        editor.getSession().setMode("ace/mode/javascript");
+        editor.getSession().setMode("ace/mode/" + $("#pad_language_options").val());
 
 
     });
 
     $( "#pad_language_options" ).change(function() {
-
-        $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
-
+        editor.getSession().setMode("ace/mode/" + $("#pad_language_options").val());
     });
 
     function get_messages () {
