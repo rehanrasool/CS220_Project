@@ -1,5 +1,6 @@
 $(function(){
 
+  var hljs = require('highlight.js');
   var socket = io();
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
@@ -40,10 +41,10 @@ $(function(){
         $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
-        /*$("#pad_language_options").val(data['lang']);
+        $("#pad_language_options").val(data['lang']);
         $('pre code').each(function(i, block) {
           hljs.highlightBlock(block);
-        });*/
+        });
 
     });
 
