@@ -203,7 +203,7 @@ module.exports = function(app, io) {
     var chimpad_pad_id = 1;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user,type) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + '\'' chimpad_pad_type +'\') RETURNING id;';
+      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user,type) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + '"'+ chimpad_pad_type +'") RETURNING id;';
       console.log(save_or_update_pad_query);
       client.query(save_or_update_pad_query , function(err, result) {
         done();
