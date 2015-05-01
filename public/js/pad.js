@@ -41,18 +41,12 @@ $(function(){
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
         $("#pad_language_options").val(data['lang']);
-        $('pre code').each(function(i, block) {
-          hljs.highlightBlock(block);
-        });
 
     });
 
     $( "#pad_language_options" ).change(function() {
-      $('#pad_content').attr('class', $( "#pad_language_options" ).val());
+      $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
 
-      $('pre code').each(function(i, block) {
-        hljs.highlightBlock(block);
-      });
     });
 
     function get_messages () {
