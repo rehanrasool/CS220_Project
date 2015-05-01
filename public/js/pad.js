@@ -99,6 +99,7 @@ $(function(){
  
     $("#pad_content").bind('keyup', function(){
        var text = $('#pad_content').html();
+       Prism.highlightAll();
         socket.emit('pad_content_send', { message: text });
     }); 
      
