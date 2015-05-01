@@ -46,3 +46,10 @@ code {
   overflow-y: scroll;
   background-color: white !important;
 }
+
+.nohighlight {
+  height: 300px !important;
+  overflow-y: scroll !important;
+  background-color: white !important;
+  color: black;
+}
