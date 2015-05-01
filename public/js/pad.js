@@ -4,7 +4,7 @@ $(function(){
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
   var messages=[];
-  var editor;
+  var editor = ace.edit("pad_content");
 
     $.ajax
       ({
@@ -37,7 +37,7 @@ $(function(){
       
         var data = raw_data[0];
         $('#pad_title').html(data['title']);
-        $('#pad_content').html(data['content']);
+        //$('#pad_content').html(data['content']);
         $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
         $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
 
@@ -48,7 +48,7 @@ $(function(){
           $('#pad_content').attr('class', 'language-' + $( "#pad_language_options" ).val());
         }*/
 
-        editor = ace.edit("pad_content");
+        editor.setValue(data['content']);
         editor.getSession().setMode("ace/mode/javascript");
 
 
@@ -105,7 +105,6 @@ $(function(){
  
     editor.getSession().on('change', function(e) {
        var text =  editor.getValue();
-       Prism.highlightAll();
         socket.emit('pad_content_send', { message: text });
     }); 
      
