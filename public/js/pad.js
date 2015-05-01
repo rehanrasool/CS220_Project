@@ -1,6 +1,5 @@
 $(function(){
 
-  var hljs = require('highlight.js');
   var socket = io();
 	// getting the id of the room from the url
 	var chimpad_pad_id = Number(window.location.pathname.match(/\/pad\/(\d+)$/)[1]);
