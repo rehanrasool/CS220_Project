@@ -44,5 +44,5 @@ textarea {
 code {
   height: 300px;
   overflow-y: scroll;
-  background-color: white;
+  background-color: white !important;
 }
