@@ -48,7 +48,6 @@ $(function(){
         }*/
         
         var editor = ace.edit("pad_content");
-        editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/javascript");
 
 
