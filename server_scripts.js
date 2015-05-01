@@ -211,7 +211,7 @@ module.exports = function(app, io) {
         else
          { 
             chimpad_pad_id = result.rows[0]['id'];
-
+            console.log("\nIDDDDDD ISSSSSSSSs = "+ chimpad_pad_id + "\n")
 
             update_admin_pads_query = 'INSERT INTO user_pad(user_id,pad_id,admin) VALUES (' + chimpad_pad_user + ',' + chimpad_pad_id + ',1);'; // not an admin
 
