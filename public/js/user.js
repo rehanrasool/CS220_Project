@@ -73,6 +73,12 @@ $(function(){
 		}
 	}).done(function(raw_data) {
 		var data = raw_data[0];
-		$('#user_skills').html(data['lang']);
+		var body=$('#user_skills');
+		var par=$('<p>');
+		var temp="";
+		$.each(data, function(i,data){
+			temp.append("*" + data['lang']);
+		});
+		body.append(par.html(temp));
 	});
 });
