@@ -8,11 +8,9 @@ $(function(){
 		if(collaborator_name != ""){
 			collaborator_array.push(collaborator_name);
 			var current_names = $('#collaborators_name').html();
-			if($('#collaborators_name').html() == ""){
-				$('#collaborators_name').html(collaborator_name + " , ")
-			}else{
-				$('#collaborators_name').html(current_names + " , " + collaborator_name);
-			}		
+			
+			$('#collaborators_name').html(current_names + " , " + collaborator_name);
+				
 			$('#collaborator_search').val(""); //empty the field
 		}
 	});
@@ -43,6 +41,7 @@ $(function(){
 
 	$("#create_button").click(function(){
 		var chimpad_pad_title = $('#pad_title').val();
+		var chimpad_pad_type = $('#pad_type_options').val();
 	        $.ajax
 	          ({
 	            type: "POST",
@@ -50,6 +49,7 @@ $(function(){
 	            url: "/create_pad",
 	            //json object to sent to the authentication url
 	            data : {
+	            pad_type : chimpad_pad_type,
 	            pad_title : chimpad_pad_title,
 	            pad_collaborators : collaborator_array
 	          } }).done(function(raw_data) {
