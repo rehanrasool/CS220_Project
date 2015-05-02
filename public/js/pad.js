@@ -39,7 +39,8 @@ $(function(){
         $('#pad_title').html(data['title']);
         //$('#pad_content').html(data['content']);
         $('#pad_content_last_modified_timestamp').html('last modified: ' + moment(new Date(data['last_modified_timestamp'])).fromNow());
-        $('#pad_content_last_modified_user').html('last modified by : <a href="">' + data['last_modified_user'] + '</a>');
+        $('#pad_content_last_modified_user').html('last modified by : <a href="..\\user\\' + data['last_modified_user'] + '">' + data['username'] + '</a>');
+
 
         $("#pad_language_options").val(data['lang']);
 

@@ -510,7 +510,9 @@ module.exports = function(app, io) {
       var chimpad_pad_id = request.body.pad_id;
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_pad_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user,lang FROM pad WHERE id = ' + chimpad_pad_id + ';';
+        //get_pad_query = 'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user,lang FROM pad WHERE id = ' + chimpad_pad_id + ';';
+
+        get_pad_query = 'SELECT p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, p.lang, u.username FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) WHERE p.id = ' + chimpad_pad_id + ';';
 
         client.query(get_pad_query , function(err, result) {
           done();
