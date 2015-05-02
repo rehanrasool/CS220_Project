@@ -73,12 +73,10 @@ $(function(){
 		}
 	}).done(function(raw_data) {
 		var data = raw_data;
-		var body=$('#user_skills');
-		var par=$('<p>');
+		var body=$('#user_skills tbody');
 		var temp="";
 		$.each(data, function(i,data){
-			temp+="*" + data['lang'];
+			$('<tr>').html(data['lang']).appendTo(body);
 		});
-		body.append(par.html(temp));
 	});
 });
