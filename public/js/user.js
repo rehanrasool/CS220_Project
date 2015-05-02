@@ -62,7 +62,7 @@ $(function(){
 		}
 	}).done(function(raw_data) {
 		var data = raw_data[0];
-		$('#user_ownerships').html(data['number']);
+		$('#user_pad_ownerships').html(data['number']);
 	});
 	$.ajax
 	({
