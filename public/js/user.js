@@ -77,7 +77,7 @@ $(function(){
 		var par=$('<p>');
 		var temp="";
 		$.each(data, function(i,data){
-			temp.append("*" + data['lang']);
+			temp+="*" + data['lang'];
 		});
 		body.append(par.html(temp));
 	});
