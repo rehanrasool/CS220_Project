@@ -181,7 +181,7 @@ module.exports = function(app, io) {
       /*
       get_all_user_profile_data="SELECT id, title, date_part(\'epoch\' , last_modified_timestamp)*1000 as last_modified_timestamp, last_modified_user FROM pad WHERE id IN (SELECT pad_id FROM user_pad WHERE user_id = "+id+ " ) AND type='public' ORDER BY last_modified_timestamp DESC;";
       */
-      client.query("SELECT id, title, date_part(\'epoch\' , last_modified_timestamp)*1000 as last_modified_timestamp, (SELECT username FROM user WHERE id= $1) AS last_modified_user FROM pad WHERE id IN (SELECT pad_id FROM user_pad WHERE user_id = $1 ) AND type='public' ORDER BY last_modified_timestamp DESC;"[id],function(err,result){
+      client.query("SELECT p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p INNER JOIN user_table u ON (u.id = $1) ORDER BY p.last_modified_timestamp DESC;",[id],function(err,result){
         done();
         if(err)
         {
