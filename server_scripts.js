@@ -178,8 +178,10 @@ module.exports = function(app, io) {
     app.post('/get_user_public_pads',function(request,response){
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
       var id=request.body.user_id;
+      /*
       get_all_user_profile_data="SELECT id, title, date_part(\'epoch\' , last_modified_timestamp)*1000 as last_modified_timestamp, last_modified_user FROM pad WHERE id IN (SELECT pad_id FROM user_pad WHERE user_id = "+id+ " ) AND type='public' ORDER BY last_modified_timestamp DESC;";
-      client.query(get_all_user_profile_data,function(err,result){
+      */
+      client.query("SELECT id, title, date_part(\'epoch\' , last_modified_timestamp)*1000 as last_modified_timestamp, (SELECT username FROM user WHERE id= $1) AS last_modified_user FROM pad WHERE id IN (SELECT pad_id FROM user_pad WHERE user_id = $1 ) AND type='public' ORDER BY last_modified_timestamp DESC;"[id],function(err,result){
         done();
         if(err)
         {
