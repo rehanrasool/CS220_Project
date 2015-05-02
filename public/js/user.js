@@ -42,3 +42,4 @@ $(function(){
     		  tbody.append(tr);	
   	});
 });
+});
