@@ -40,6 +40,39 @@ $(function(){
             }
     		  });
     		  tbody.append(tr);	
-  	});
-});
+  			});
+	});
+	$.ajax
+	({
+		type:"POST",
+		url:"/get_user_contributions",
+		data:{
+			user_id:chimpad_user_id
+		}
+	}).done(function(raw_data) {
+		var data = raw_data[0];
+		$('#user_contributions').html(data['number']);
+	});
+	$.ajax
+	({
+		type:"POST",
+		url:"/get_user_pad_ownerships",
+		data:{
+			user_id:chimpad_user_id
+		}
+	}).done(function(raw_data) {
+		var data = raw_data[0];
+		$('#user_ownerships').html(data['number']);
+	});
+	$.ajax
+	({
+		type:"POST",
+		url:"/get_user_skills",
+		data:{
+			user_id:chimpad_user_id
+		}
+	}).done(function(raw_data) {
+		var data = raw_data[0];
+		$('#user_skills').html(data['lang']);
+	});
 });

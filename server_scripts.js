@@ -177,6 +177,66 @@ module.exports = function(app, io) {
       });
     });
   });
+  app.post('/get_user_contributions',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT COUNT(pad_id) as number FROM user_pad WHERE user_id= $1 ;",[id],function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
+    app.post('/get_user_pad_ownerships',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT COUNT(pad_id) as number FROM user_pad WHERE user_id= $1 AND admin=1;",[id],function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
+    app.post('/get_user_skills',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT DISTINCT lang FROM pad WHERE id IN (SELECT pad_id FROM user_pad WHERE user_id= $1) ;",[id],function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
     app.post('/get_user_public_pads',function(request,response){
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
       var chimpad_user_id=request.body.user_id;
