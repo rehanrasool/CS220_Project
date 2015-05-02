@@ -74,10 +74,9 @@ $(function(){
 	}).done(function(raw_data) {
 		var data = raw_data;
 		var body=$('#user_skills tbody');
-		var temp="";
 		$.each(raw_data, function(i,dat){
 			var tr=$('<tr>');
-			$('<td>').html(data['lang']).appendTo(tr);
+			$('<td>').html(dat['lang']).appendTo(tr);
 			body.append(tr);
 		});
 	});
