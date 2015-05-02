@@ -1,6 +1,6 @@
 $(function(){
 	var chimpad_user_id=Number(window.location.pathname.match(/\/user\/(\d+)$/)[1]);
-	var src="../public/img/"+chimpad_user_id+".jpg";
+	var src="../img/"+chimpad_user_id+".jpg";
 	$.ajax
 	({
 		type:"POST",
