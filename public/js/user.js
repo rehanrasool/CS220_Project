@@ -9,14 +9,37 @@ $(function(){
 			user_id:chimpad_user_id
 		}
 	}).done(function(raw_data) {
-		var tbody=$('#user_profile tbody'),
-		props=['id','username','email'];
-		$.each(raw_data,function(i,pad) {
-			var tr=$('<tr>');
-			$.each(props,function(i,prop){
-				$('<td>').html(pad[prop]).appendTo(tr);
-			});
-			tbody.append(tr);
-		});
+		var data = raw_data[0];
+
+		$('#user_name_head').html(data['username']);
+		$('#user_id_val').html(data['id']);
+		$('#user_email_val').html(data['email']);
 	});
+	$.ajax
+		({
+		type:"POST",
+		url:"/get_user_public_pads",
+		data:{
+			user_id:chimpad_user_id
+		}
+	}).done(function(raw_data) {
+      
+			var tbody = $('#user_pad_table tbody'),
+        	props = ["id", "title", "last_modified_timestamp", "username"];
+    		$.each(raw_data, function(i, pad) {
+    		  var tr = $('<tr>');
+    		  $.each(props, function(i, prop) {
+            if (prop == 'last_modified_timestamp') {
+              $('<td>').html(moment(new Date(pad[prop])).fromNow()).appendTo(tr);
+            } else if (prop == 'title') {
+              $('<td>').html('<a href="..\\pad\\' + pad['id'] + '">' + pad[prop] + '</a>').appendTo(tr);  
+            } else if(prop =='username'){
+              $('<td>').html('<a href="..\\user\\' + pad['last_modified_user'] + '">' + pad[prop] + '</a>').appendTo(tr);  
+            }else{
+              $('<td>').html(pad[prop]).appendTo(tr);  
+            }
+    		  });
+    		  tbody.append(tr);	
+  	});
+});
 });

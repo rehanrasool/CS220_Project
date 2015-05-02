@@ -165,8 +165,10 @@ module.exports = function(app, io) {
   app.post('/get_user_profile',function(request,response){
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
       var id=request.body.user_id;
-      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = "+id+ " ;";
-      client.query(get_all_user_profile_data,function(err,result){
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT id,username,email FROM user_table WHERE id = $1 ;",[id],function(err,result){
         done();
         if(err)
         {
@@ -179,6 +181,39 @@ module.exports = function(app, io) {
         }
       });
     });
+  });
+    app.post('/get_user_public_pads',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var chimpad_user_id=request.body.user_id;
+      get_user_pads_id_list = 'SELECT pad_id FROM user_pad WHERE user_id = \'' + chimpad_user_id + '\';';
+
+        client.query(get_user_pads_id_list , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            var user_pad_ids = "0";
+            for (row in result.rows) {
+              user_pad_ids = user_pad_ids + "," + result.rows[row]['pad_id'];
+            }
+
+            get_user_pads_data = 'SELECT  p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) Where p.id IN ('+ user_pad_ids +') ORDER BY p.last_modified_timestamp DESC;';
+
+              client.query(get_user_pads_data , function(err, result) {
+                done();
+                if (err)
+                 { console.error(err); response.send("Error " + err); }
+                else
+                 { 
+                    response.send(result.rows); 
+                 }
+              });
+
+            //response.send();
+           }
+        });
+      });
   });
 
   app.post('/search_collaborator', function(request, response) {
