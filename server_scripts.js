@@ -186,9 +186,7 @@ module.exports = function(app, io) {
     potential_name = potential_name + '%';
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
        
-        console.log("USERNAME ==== " + potential_name);
         client.query('SELECT username FROM user_table WHERE username like $1', [potential_name] , function(err, result) {
-          console.log("USERNAME INSIDE==== " + potential_name);
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
