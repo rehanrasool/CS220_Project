@@ -1,6 +1,13 @@
 $(function(){
 	var chimpad_user_id=Number(window.location.pathname.match(/\/user\/(\d+)$/)[1]);
+	if (chimpad_user_id>3)
+	{
+		src="http://placehold.it/150x150";
+	}
+	else
+	{
 	var src="../img/"+chimpad_user_id+".jpg";
+	}
 	$.ajax
 	({
 		type:"POST",
