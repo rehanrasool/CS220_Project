@@ -72,7 +72,7 @@ $(function(){
 			user_id:chimpad_user_id
 		}
 	}).done(function(raw_data) {
-		var data = raw_data[0];
+		var data = raw_data;
 		var body=$('#user_skills');
 		var par=$('<p>');
 		var temp="";
