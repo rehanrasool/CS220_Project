@@ -160,8 +160,10 @@ module.exports = function(app, io) {
   app.post('/get_user_profile',function(request,response){
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
       var id=request.body.user_id;
-      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = "+id+ " ;";
-      client.query(get_all_user_profile_data,function(err,result){
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT id,username,email FROM user_table WHERE id = $1 ;",[id],function(err,result){
         done();
         if(err)
         {
