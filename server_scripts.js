@@ -139,8 +139,13 @@ module.exports = function(app, io) {
   });
 
   app.post('/get_all_pads', function(request, response) {
+
+    var sess = request.session;
+    var chimpad_pad_user = sess.user_id;
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_pads_data = 'SELECT p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) ORDER BY p.last_modified_timestamp DESC;';
+        get_all_pads_data = 'SELECT p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) WHERE type = \'public\' AND p.id NOT IN ( SELECT pad_id from user_pad WHERE user_id = ' + chimpad_pad_user + ') ORDER BY p.last_modified_timestamp DESC;';
+
+        console.log(get_all_pads_data);
 
 /*        'SELECT id,title,content,date_part(\'epoch\',last_modified_timestamp)*1000 as last_modified_timestamp,last_modified_user FROM pad ORDER BY last_modified_timestamp DESC;';
 */
@@ -182,8 +187,10 @@ module.exports = function(app, io) {
   app.post('/get_user_profile',function(request,response){
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
       var id=request.body.user_id;
-      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = "+id+ " ;";
-      client.query(get_all_user_profile_data,function(err,result){
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT id,username,email FROM user_table WHERE id = $1 ;",[id],function(err,result){
         done();
         if(err)
         {
@@ -197,13 +204,106 @@ module.exports = function(app, io) {
       });
     });
   });
+  app.post('/get_user_contributions',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT COUNT(pad_id) as number FROM user_pad WHERE user_id= $1 ;",[id],function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
+    app.post('/get_user_pad_ownerships',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT COUNT(pad_id) as number FROM user_pad WHERE user_id= $1 AND admin=1;",[id],function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
+    app.post('/get_user_skills',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var id=request.body.user_id;
+      /*
+      get_all_user_profile_data="SELECT id,username,email FROM user_table WHERE id = $1 ;";
+      */
+      client.query("SELECT DISTINCT lang FROM pad WHERE id IN (SELECT pad_id FROM user_pad WHERE user_id= $1) ;",[id],function(err,result){
+        done();
+        if(err)
+        {
+          console.error(err);
+          response.send("Error "+err);
+        }
+        else
+        {
+          response.send(result.rows);
+        }
+      });
+    });
+  });
+    app.post('/get_user_public_pads',function(request,response){
+    pg.connect(process.env.DATABASE_URL,function(err,client,done){
+      var chimpad_user_id=request.body.user_id;
+      get_user_pads_id_list = 'SELECT pad_id FROM user_pad WHERE user_id = \'' + chimpad_user_id + '\';';
+
+        client.query(get_user_pads_id_list , function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+           { 
+            var user_pad_ids = "0";
+            for (row in result.rows) {
+              user_pad_ids = user_pad_ids + "," + result.rows[row]['pad_id'];
+            }
+
+            get_user_pads_data = 'SELECT  p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p INNER JOIN user_table u ON (u.id = p.last_modified_user) Where p.id IN ('+ user_pad_ids +') ORDER BY p.last_modified_timestamp DESC;';
+
+              client.query(get_user_pads_data , function(err, result) {
+                done();
+                if (err)
+                 { console.error(err); response.send("Error " + err); }
+                else
+                 { 
+                    response.send(result.rows); 
+                 }
+              });
+
+            //response.send();
+           }
+        });
+      });
+  });
 
   app.post('/search_collaborator', function(request, response) {
     var potential_name = request.body.chimpad_list_text;
+    potential_name = potential_name + '%';
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_pads_data = 'SELECT username FROM user_table WHERE username like \'' + potential_name + '%\' ;';
-
-        client.query(get_all_pads_data , function(err, result) {
+       
+        client.query('SELECT username FROM user_table WHERE username like $1', [potential_name] , function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
@@ -217,6 +317,7 @@ module.exports = function(app, io) {
 
   app.post('/create_pad', function(request, response) {
     sess=request.session;
+    var chimpad_pad_type = request.body.pad_type;
     var chimpad_pad_title = request.body.pad_title;
     var chimpad_pad_user = sess.user_id;
     var collaborators_array = request.body.pad_collaborators;
@@ -224,9 +325,11 @@ module.exports = function(app, io) {
     var chimpad_pad_id = 1;
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ') RETURNING id;';
-      console.log(save_or_update_pad_query);
-      client.query(save_or_update_pad_query , function(err, result) {
+      /*save_or_update_pad_query = 'INSERT INTO pad (title,last_modified_timestamp,last_modified_user,type) VALUES (\'' + chimpad_pad_title + '\', NOW() ,' + chimpad_pad_user + ',\'' + chimpad_pad_type +'\' ) RETURNING id;';
+      console.log(save_or_update_pad_query);*/
+
+      
+      client.query('INSERT INTO pad (title,last_modified_timestamp,last_modified_user,type) VALUES ($1,NOW(),$2,$3) RETURNING id;',[chimpad_pad_title,chimpad_pad_user,chimpad_pad_type] , function(err, result) {
         done();
         if (err)
          { console.error(err); response.send("Error " + err); }
