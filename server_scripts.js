@@ -140,10 +140,10 @@ module.exports = function(app, io) {
 
   app.post('/get_all_pads', function(request, response) {
 
-    var sess = request.sessions();
+    var sess = request.session;
     var chimpad_pad_user = sess.user_id;
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        get_all_pads_data = 'SELECT p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p WHERE type = \'public\'  INNER JOIN user_table u ON (u.id = p.last_modified_user) ORDER BY p.last_modified_timestamp DESC;';
+        get_all_pads_data = 'SELECT p.id , p.title , p.content , date_part(\'epoch\' , p.last_modified_timestamp)*1000 as last_modified_timestamp , p.last_modified_user, u.username FROM pad p WHERE type = \'public\' AND p.id NOT IN ( SELECT pad_id from user_pad WHERE user_id = ' + chimpad_pad_user + ') INNER JOIN user_table u ON (u.id = p.last_modified_user) ORDER BY p.last_modified_timestamp DESC;';
 
         console.log(get_all_pads_data);
 
