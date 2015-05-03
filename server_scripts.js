@@ -244,7 +244,7 @@ module.exports = function(app, io) {
     pg.connect(process.env.DATABASE_URL,function(err,client,done){
       var chimpad_user_id=request.body.user_id;
 
-        client.query('SELECT pad_id FROM user_pad WHERE user_id = $1;' ,[chimpad_user_id] function(err, result) {
+        client.query('SELECT pad_id FROM user_pad WHERE user_id = $1;' ,[chimpad_user_id], function(err, result) {
           done();
           if (err)
            { console.error(err); response.send("Error " + err); }
