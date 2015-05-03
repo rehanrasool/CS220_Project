@@ -1,7 +1,7 @@
 {
   "name": "chimpad",
   "version": "0.1.3",
-  "description": "A sample Node.js app using Express 4",
+  "description": "a collaboration platform for people especially developers",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
