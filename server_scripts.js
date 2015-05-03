@@ -89,6 +89,7 @@ module.exports = function(app, io) {
 
             sess=request.session;
             sess.user_id=id;
+            sess.user_name=username;
 
             response.redirect('/home/'+id);
            }
